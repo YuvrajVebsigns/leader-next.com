@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const BACKEND_API_BASE = (process.env.NEXT_PUBLIC_API_URL || '').replace(/\/$/, '');
+const BACKEND_API_BASE = (process.env.NEXT_PUBLIC_API_URL || 'https://ciopowerlist.com').replace(
+  /\/$/,
+  '',
+);
 
 function buildUpstreamUrl(request: NextRequest) {
   const requestUrl = new URL(request.url);

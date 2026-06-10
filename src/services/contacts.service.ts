@@ -371,6 +371,7 @@ export async function submitWebsiteContact(payload: ContactSubmission) {
   const headers: Record<string, string> = {};
   if (auth?.token) headers.Authorization = `Bearer ${auth.token}`;
   if (auth?.websiteId) headers['x-website-id'] = auth.websiteId;
+  headers['x-website-domain'] = domain;
 
   try {
     const response = await apiFetch<ContactResponse>(API_ENDPOINTS.WEBSITE.CONTACTS, {
@@ -393,6 +394,7 @@ export async function submitWebsiteContact(payload: ContactSubmission) {
         const retryHeaders: Record<string, string> = {
           Authorization: `Bearer ${freshAuth.token}`,
           'x-website-id': freshAuth.websiteId,
+          'x-website-domain': domain,
         };
 
         return apiFetch<ContactResponse>(API_ENDPOINTS.WEBSITE.CONTACTS, {

@@ -1,3 +1,5 @@
+import { getWebsiteDomain } from '@/lib/website-auth';
+
 export interface WebsiteBlogWebsite {
   name: string;
   domain: string;
@@ -659,7 +661,7 @@ export async function fetchWebsiteBlogs(page = 1, limit = 10, search = '') {
     // Import here to avoid circulars in some bundlers
     const { apiFetch } = await import('@/services/apiFetch');
 
-    const domain = 'coremediagroup.com';
+    const domain = getWebsiteDomain();
     const auth = await ensureWebsiteAuth(domain);
 
     const url = `/api/v1/website/blogs?${searchParams.toString()}`;
@@ -720,7 +722,7 @@ export async function fetchWebsiteBlogBySlug(idOrSlug: string) {
   if (!slug) return null;
 
   const { apiFetch } = await import('@/services/apiFetch');
-  const domain = 'coremediagroup.com';
+  const domain = getWebsiteDomain();
   const auth = await ensureWebsiteAuth(domain);
 
   const headers: Record<string, string> = {};
@@ -772,7 +774,7 @@ export async function fetchWebsiteBlogComments(blogId: string) {
     return { success: true, message: 'No blog id', data: [] } as WebsiteBlogCommentsResponse;
 
   const { apiFetch } = await import('@/services/apiFetch');
-  const domain = 'coremediagroup.com';
+  const domain = getWebsiteDomain();
   const auth = await ensureWebsiteAuth(domain);
 
   const headers: Record<string, string> = {};
@@ -833,7 +835,7 @@ export async function submitWebsiteBlogComment(
   blogId: string,
   payload: { name: string; email?: string; message: string },
 ) {
-  const domain = 'coremediagroup.com';
+  const domain = getWebsiteDomain();
   const auth = await ensureWebsiteAuth(domain);
 
   const headers: Record<string, string> = {};
@@ -890,7 +892,7 @@ export async function submitWebsiteBlogComment(
 export async function submitWebsiteBlogLike(blogId: string) {
   if (!blogId) throw new Error('Missing blog id');
 
-  const domain = 'coremediagroup.com';
+  const domain = getWebsiteDomain();
   const auth = await ensureWebsiteAuth(domain);
 
   const headers: Record<string, string> = {};

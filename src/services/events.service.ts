@@ -4,12 +4,8 @@ import {
   ensureWebsiteAuth as obtainWebsiteAuth,
   getWebsiteDomain,
 } from '@/lib/website-auth';
+import type { WebsiteAuth } from '@/lib/website-auth';
 import { apiFetch } from '@/services/apiFetch';
-
-type WebsiteAuth = {
-  token: string;
-  websiteId: string;
-};
 
 export type WebsiteEvent = {
   id: string;
@@ -47,12 +43,15 @@ export function readStoredWebsiteAuth(): WebsiteAuth | null {
       parsed !== null &&
       'token' in parsed &&
       'websiteId' in parsed &&
+      'domain' in parsed &&
       typeof (parsed as { token?: unknown }).token === 'string' &&
-      typeof (parsed as { websiteId?: unknown }).websiteId === 'string'
+      typeof (parsed as { websiteId?: unknown }).websiteId === 'string' &&
+      typeof (parsed as { domain?: unknown }).domain === 'string'
     ) {
       return {
         token: (parsed as { token: string }).token,
         websiteId: (parsed as { websiteId: string }).websiteId,
+        domain: (parsed as { domain: string }).domain,
       };
     }
   } catch {
@@ -101,7 +100,7 @@ async function ensureWebsiteAuth(domain: string) {
     null;
 
   if (token && websiteId) {
-    const value: WebsiteAuth = { token, websiteId };
+    const value: WebsiteAuth = { token, websiteId, domain };
     window.localStorage.setItem('websiteAuth', JSON.stringify(value));
     return value;
   }

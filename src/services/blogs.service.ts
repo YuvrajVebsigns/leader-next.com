@@ -1,4 +1,5 @@
 import { API_ENDPOINTS } from '@/constants/api';
+import { getWebsiteDomain } from '@/lib/website-auth';
 
 export interface WebsiteBlogWebsite {
   name: string;
@@ -621,9 +622,24 @@ const FALLBACK_WEBSITE_BLOGS: WebsiteBlogItem[] = [
   },
 ];
 
-function buildFallbackResponse(page = 1, limit = 10) {
+function normalizeWebsiteDomain(value: string) {
+  return value
+    .replace(/^https?:\/\//i, '')
+    .replace(/\/$/, '')
+    .toLowerCase();
+}
+
+function buildFallbackResponse(page = 1, limit = 10, domain?: string) {
   const start = Math.max(0, (page - 1) * limit);
-  const data = FALLBACK_WEBSITE_BLOGS.slice(start, start + limit);
+  const normalizedDomain = domain ? normalizeWebsiteDomain(domain) : null;
+  const filteredBlogs = normalizedDomain
+    ? FALLBACK_WEBSITE_BLOGS.filter((item) =>
+        item.websites?.some(
+          (website) => normalizeWebsiteDomain(website.domain) === normalizedDomain,
+        ),
+      )
+    : FALLBACK_WEBSITE_BLOGS;
+  const data = filteredBlogs.slice(start, start + limit);
 
   return {
     success: true,
@@ -631,11 +647,11 @@ function buildFallbackResponse(page = 1, limit = 10) {
     data: {
       data,
       meta: {
-        total: FALLBACK_WEBSITE_BLOGS.length,
+        total: filteredBlogs.length,
         page,
         limit,
-        totalPages: Math.max(1, Math.ceil(FALLBACK_WEBSITE_BLOGS.length / limit)),
-        hasNextPage: start + limit < FALLBACK_WEBSITE_BLOGS.length,
+        totalPages: Math.max(1, Math.ceil(filteredBlogs.length / limit)),
+        hasNextPage: start + limit < filteredBlogs.length,
         hasPreviousPage: page > 1,
       },
     },
@@ -652,7 +668,7 @@ export async function fetchWebsiteBlogs(page = 1, limit = 10, search = '') {
     searchParams.set('search', search.trim());
   }
 
-  const fallback = buildFallbackResponse(page, limit);
+  const fallback = buildFallbackResponse(page, limit, getWebsiteDomain());
 
   // If a search term is provided, filter the fallback data immediately
   if (search.trim()) {
@@ -670,7 +686,7 @@ export async function fetchWebsiteBlogs(page = 1, limit = 10, search = '') {
     // Import here to avoid circulars in some bundlers
     const { apiFetch } = await import('@/services/apiFetch');
 
-    const domain = 'coremediagroup.com';
+    const domain = getWebsiteDomain();
     const auth = await ensureWebsiteAuth(domain);
 
     const url = `/api/v1/website/blogs?${searchParams.toString()}`;
@@ -731,7 +747,7 @@ export async function fetchWebsiteBlogBySlug(idOrSlug: string) {
   if (!slug) return null;
 
   const { apiFetch } = await import('@/services/apiFetch');
-  const domain = 'coremediagroup.com';
+  const domain = getWebsiteDomain();
   const auth = await ensureWebsiteAuth(domain);
 
   const headers: Record<string, string> = {};
@@ -897,7 +913,7 @@ export async function submitWebsiteBlogComment(blogId: string, payload: SubmitBl
 export async function submitWebsiteBlogLike(blogId: string) {
   if (!blogId) throw new Error('Missing blog id');
 
-  const domain = 'coremediagroup.com';
+  const domain = getWebsiteDomain();
   const auth = await ensureWebsiteAuth(domain);
 
   const headers: Record<string, string> = {};

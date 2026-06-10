@@ -3,6 +3,7 @@ import { apiFetch } from '@/services/apiFetch';
 export type WebsiteAuth = {
   token: string;
   websiteId: string;
+  domain: string;
 };
 
 type WebsiteTokenResponse = {
@@ -46,10 +47,10 @@ export function getWebsiteDomain(): string {
     }
   }
 
-  return 'core-mediagroup.com';
+  return 'ciopowerlist.com';
 }
 
-export function readStoredWebsiteAuth(): WebsiteAuth | null {
+export function readStoredWebsiteAuth(domain?: string): WebsiteAuth | null {
   if (typeof window === 'undefined') return null;
 
   const raw = window.localStorage.getItem('websiteAuth');
@@ -63,13 +64,20 @@ export function readStoredWebsiteAuth(): WebsiteAuth | null {
       parsed !== null &&
       'token' in parsed &&
       'websiteId' in parsed &&
+      'domain' in parsed &&
       typeof (parsed as { token?: unknown }).token === 'string' &&
-      typeof (parsed as { websiteId?: unknown }).websiteId === 'string'
+      typeof (parsed as { websiteId?: unknown }).websiteId === 'string' &&
+      typeof (parsed as { domain?: unknown }).domain === 'string'
     ) {
-      return {
+      const stored = {
         token: (parsed as { token: string }).token,
         websiteId: (parsed as { websiteId: string }).websiteId,
+        domain: (parsed as { domain: string }).domain,
       };
+
+      if (!domain || stored.domain === domain) {
+        return stored;
+      }
     }
   } catch {
     return null;
@@ -111,7 +119,7 @@ export async function ensureWebsiteAuth(domain?: string): Promise<WebsiteAuth> {
   }
 
   const resolvedDomain = domain ?? getWebsiteDomain();
-  const stored = readStoredWebsiteAuth();
+  const stored = readStoredWebsiteAuth(resolvedDomain);
   if (stored) return stored;
 
   const tokenRes = await apiFetch<WebsiteTokenResponse>(
@@ -136,7 +144,11 @@ export async function ensureWebsiteAuth(domain?: string): Promise<WebsiteAuth> {
     );
   }
 
-  const value: WebsiteAuth = { token, websiteId };
+  const value: WebsiteAuth = {
+    token,
+    websiteId,
+    domain: resolvedDomain,
+  };
   window.localStorage.setItem('websiteAuth', JSON.stringify(value));
   return value;
 }
