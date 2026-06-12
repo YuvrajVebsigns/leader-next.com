@@ -36,19 +36,11 @@ export default function Footer() {
 
               <ul className="footer-links">
                 <li>
-                  <Link href="/survey-study">Survey / Study</Link>
+                  <Link href="/register">Registration</Link>
                 </li>
 
                 <li>
-                  <Link href="/video">Videos</Link>
-                </li>
-
-                <li>
-                  <Link href="/bespoke-events">Bespoke Events</Link>
-                </li>
-
-                <li>
-                  <Link href="/social-media">Social Media</Link>
+                  <Link href="/nominate">Nominate</Link>
                 </li>
               </ul>
             </div>
@@ -59,19 +51,11 @@ export default function Footer() {
 
               <ul className="footer-links">
                 <li>
-                  <Link href="/#contact-section">Contact Us</Link>
-                </li>
-
-                <li>
                   <Link href="/blog">Blog</Link>
                 </li>
 
                 <li>
-                  <Link href="/register">Registration</Link>
-                </li>
-
-                <li>
-                  <Link href="/nominate">Nominate</Link>
+                  <Link href="/events">Event</Link>
                 </li>
               </ul>
             </div>

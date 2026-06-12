@@ -3,10 +3,11 @@ import FoundersMessage from '@/components/FoundersMessage';
 import ExpertiseSection from '@/components/ExpertiseSection';
 import KeyClient from '@/components/KeyClient';
 import ProjectsSection from '@/components/ProjectsSection';
-import FAQSection from '@/components/FAQSection';
+// import FAQSection from '@/components/FAQSection';
 import ContactSection from '@/components/ContactSection';
 import BlogsSection from '@/components/BlogsSection';
 import DialoguesSection from '@/components/DialoguesSection';
+import CIOPowerListProcess from '@/components/Process';
 
 export default function Home() {
   return (
@@ -17,13 +18,16 @@ export default function Home() {
       <ExpertiseSection />
       {/* <TeamSection /> */}
       <KeyClient />
+      <CIOPowerListProcess />
       <ProjectsSection />
       {/* <ResearchSection />
       <Brands /> */}
-      <FAQSection />
-      <ContactSection />
+      {/* <FAQSection /> */}
+
       <BlogsSection />
+
       <DialoguesSection />
+      <ContactSection />
       {/* <AssociateBrandsPage /> */}
       {/* </div> */}
     </main>

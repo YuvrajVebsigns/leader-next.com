@@ -1,8 +1,9 @@
 'use client';
 
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
+import Image from 'next/image';
 
-export default function ExpertiseSection() {
+export default function AboutUsSection() {
   const sectionRef = useScrollAnimation<HTMLDivElement>({
     animationClass: 'animate-fade-in-up',
     initialTransform: 'translateY(40px)',
@@ -13,132 +14,109 @@ export default function ExpertiseSection() {
     initialTransform: 'translateX(-28px)',
     threshold: 0.12,
   });
+
   const cardRef2 = useScrollAnimation<HTMLDivElement>({
     animationClass: 'animate-fade-in-left',
     initialTransform: 'translateX(-28px)',
     threshold: 0.12,
   });
+
   const cardRef3 = useScrollAnimation<HTMLDivElement>({
     animationClass: 'animate-fade-in-left',
     initialTransform: 'translateX(-28px)',
     threshold: 0.12,
   });
+
   const cardRef4 = useScrollAnimation<HTMLDivElement>({
     animationClass: 'animate-fade-in-left',
     initialTransform: 'translateX(-28px)',
     threshold: 0.12,
   });
+
   const cardRef5 = useScrollAnimation<HTMLDivElement>({
     animationClass: 'animate-fade-in-left',
     initialTransform: 'translateX(-28px)',
     threshold: 0.12,
   });
 
-  const bottomCards = [
+  const cards = [
     {
-      image: '/assets/aboutus/Award-logo1.png',
-      title: 'Over 130+ CIOs will be recognised',
+      image: '/assets/aboutus/recognized-dark.png',
+      title: '130+ CIO Leaders',
+      description:
+        'Recognising influential CIOs and ICT leaders driving innovation and business transformation across industries.',
     },
     {
-      image: '/assets/aboutus/builb-logo.png',
-      title: 'Technology at Work No Jury - Algorithm based evaluation to pick final winners',
+      image: '/assets/aboutus/technology-dark.png',
+      title: 'Data-Driven Selection',
+      description:
+        'Winners are chosen through a transparent algorithm-based evaluation process with no jury involvement.',
     },
     {
-      image: '/assets/aboutus/dedicated-logo.png',
-      title: 'Winners chosen basis Technology & Business Influence',
+      image: '/assets/aboutus/winner-dark.png',
+      title: 'Industry Impact',
+      description:
+        'Celebrating leaders creating measurable technology and business impact through strategic initiatives.',
     },
     {
-      image: '/assets/aboutus/Award-logo.png',
-      title: 'Symposium and Recognition Program',
+      image: '/assets/aboutus/leadership-dark.png',
+      title: 'Leadership Forum',
+      description:
+        'A prestigious platform for networking, knowledge sharing, recognition, and industry collaboration.',
     },
     {
-      image: '/assets/aboutus/Award-logo-dark1.png',
-      title: 'Opportunity to - Learn | Engage | Celebrate',
+      image: '/assets/aboutus/learn-dark.png',
+      title: 'Learn & Connect',
+      description:
+        'Engage with peers, gain valuable insights, and celebrate excellence in technology leadership.',
     },
   ];
-  const [b0, b1, b2, b3, b4] = bottomCards;
+
+  const cardRefs = [cardRef1, cardRef2, cardRef3, cardRef4, cardRef5];
 
   return (
-    <section ref={sectionRef} className="expertise-section">
-      <div className="expertise-container">
-        <div className="expertise-heading expertise-heading-about">
-          <h2 className="expertise-title expertise-title-about">About</h2>
+    <section ref={sectionRef} className="aboutus-section">
+      <div className="aboutus-container">
+        <div className="aboutus-heading">
+          <div className="aboutus-label">
+            <Image
+              src="/assets/icon.png"
+              alt="CIO Power List"
+              width={20}
+              height={20}
+              className="aboutus-label-icon"
+            />
+
+            <span className="aboutus-label-text">ABOUT THE INITIATIVE</span>
+          </div>
+
+          <h2 className="aboutus-title">
+            About Us &
+            <br />
+            <span>Driving the Future of Enterprise Technology</span>
+          </h2>
+
+          {/* <p className="aboutus-intro">
+            CIO Power List celebrates visionary CIOs and ICT leaders driving innovation, transformation, business growth across India.
+          </p> */}
         </div>
 
-        <div className="expertise-grid">
-          <div className="about-content about-content-full">
-            <div className="about-text about-text-full">
-              <p>
-                Technology in the modern economy is developing, mutating, and adapting at a
-                staggering rate, and fundamentally changing the way any business operates. With
-                wider access to new and emerging technologies, marketplaces—global, national,
-                regional, or even local—are becoming increasingly competitive. In this ever-evolving
-                scenario, thought leadership is emerging as an important strategy for growth,
-                significantly impacting business models, the marketplace, consumers, and employees.
-              </p>
+        <div className="aboutus-grid">
+          {cards.map((card, index) => (
+            <div
+              key={card.title}
+              ref={cardRefs[index]}
+              className={`aboutus-card aboutus-stagger-${index + 1}`}
+            >
+              <div className="aboutus-image-wrapper">
+                <img src={card.image} alt={card.title} className="aboutus-image" />
+              </div>
 
-              <p>
-                Leading this change are a select few pioneering CIOs and ICT Leaders, blazing new
-                paths, and shaping the outcome of disruptive technologies. These ICT leaders are
-                reinventing industries and creating a new value system, driven by IT now sitting at
-                the centre of innovation for business.
-              </p>
+              <h3 className="aboutus-card-title">{card.title}</h3>
 
-              <p>
-                With CIO Power List, CORE Media seeks to discover and recognise these industry
-                legends creating ground-breaking strategies to drive growth.
-              </p>
-
-              <p>
-                CIO Power List is the list of THE most INFLUENTIAL Technology Leaders in India. With
-                corporate IT&apos;s power and influence over business growing, these CIOs are
-                leading the disruption wave, changing the rules of engagement, and capitalising on
-                opportunities to fuel business growth.
-              </p>
-
-              <p>
-                Join us in celebrating and raising a toast to India&apos;s ICT titans—disruptive
-                leaders transforming the ecosystem!
-              </p>
+              <p className="aboutus-card-description">{card.description}</p>
             </div>
-
-            <div className="about-cards">
-              <div ref={cardRef1} className="about-card stagger-1">
-                <div className="about-card-hex">
-                  <img src={b0!.image} alt={b0!.title} className="about-card-icon" />
-                </div>
-                <p className="about-card-title">{b0!.title}</p>
-              </div>
-
-              <div ref={cardRef2} className="about-card stagger-2">
-                <div className="about-card-hex">
-                  <img src={b1!.image} alt={b1!.title} className="about-card-icon" />
-                </div>
-                <p className="about-card-title">{b1!.title}</p>
-              </div>
-
-              <div ref={cardRef3} className="about-card stagger-3">
-                <div className="about-card-hex">
-                  <img src={b2!.image} alt={b2!.title} className="about-card-icon" />
-                </div>
-                <p className="about-card-title">{b2!.title}</p>
-              </div>
-
-              <div ref={cardRef4} className="about-card stagger-4">
-                <div className="about-card-hex">
-                  <img src={b3!.image} alt={b3!.title} className="about-card-icon" />
-                </div>
-                <p className="about-card-title">{b3!.title}</p>
-              </div>
-
-              <div ref={cardRef5} className="about-card stagger-5">
-                <div className="about-card-hex">
-                  <img src={b4!.image} alt={b4!.title} className="about-card-icon" />
-                </div>
-                <p className="about-card-title">{b4!.title}</p>
-              </div>
-            </div>
-          </div>
+          ))}
         </div>
       </div>
     </section>

@@ -170,7 +170,7 @@ export default function WinnerDetailClient({ slug, kicker }: WinnerDetailClientP
             <div className="winner-section-header winner-section-header--centered">
               <p className="winner-section-kicker">Winner Profiles</p>
               <h2>{section.title || 'Winner Profiles'}</h2>
-              <span>{section.testimonials.length} members</span>
+              <span>{section.testimonials.length} Members</span>
             </div>
 
             <div className="winner-section-grid">
@@ -196,7 +196,8 @@ export default function WinnerDetailClient({ slug, kicker }: WinnerDetailClientP
                     <div className="winner-profile-body">
                       <h3>{typeof entry.author === 'string' ? entry.author : 'Winner Name'}</h3>
                       <p className="winner-profile-category">
-                        Company: {typeof entry.role === 'string' ? entry.role.trim() : 'Winner'}
+                        {/* Company: */}
+                        {typeof entry.role === 'string' ? entry.role.trim() : 'Winner'}
                       </p>
                       {typeof entry.quote === 'string' && entry.quote ? (
                         <p className="winner-profile-company">&quot;{entry.quote}&quot;</p>
