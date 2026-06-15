@@ -159,6 +159,10 @@ export default function WinnerDetailClient({ slug, kicker }: WinnerDetailClientP
       <section className="winners-detail-card">
         <p className="winners-kicker">{kicker ?? 'Winners'}</p>
         <h1>{page.title}</h1>
+        <p>
+          Showcasing exceptional leaders who are driving digital transformation, business growth,
+          and innovation across industries.
+        </p>
         {page.shortDescription ? (
           <p className="winners-detail-summary">{page.shortDescription}</p>
         ) : null}

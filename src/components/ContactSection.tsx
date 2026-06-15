@@ -279,7 +279,7 @@ export default function ContactSection() {
         <div className="contact-map-area">
           <div className="contact-map">
             <Image
-              src="/assets/map3.png"
+              src="/assets/map5.png"
               alt="Global Map"
               width={700}
               height={500}

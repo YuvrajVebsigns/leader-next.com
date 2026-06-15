@@ -1,6 +1,5 @@
 // 'use client';
 
-// import Link from 'next/link';
 // import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 // import ContactSection from '@/components/ContactSection';
 
@@ -14,7 +13,9 @@
 
 //   return (
 //     <main>
-//       <ContactSection />
+//       <div ref={heroContentRef} className="contact-page-wrapper">
+//         <ContactSection />
+//       </div>
 //     </main>
 //   );
 // }

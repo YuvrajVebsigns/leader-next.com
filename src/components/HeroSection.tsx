@@ -58,21 +58,31 @@
 
 'use client';
 
+import { useEffect, useState } from 'react';
+
 import Image from 'next/image';
 
 export default function HeroSection() {
+  const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    setShow(true);
+  }, []);
+
   return (
     <section className="hero-section">
-      <div className="hero-image-only">
-        <Image
-          src="/assets/Home.png"
-          alt="Hero Banner"
-          width={1920}
-          height={500}
-          priority
-          className="hero-image"
-        />
-      </div>
+      {show && (
+        <div className="hero-image-only animate__animated animate__jackInTheBox">
+          <Image
+            src="/assets/Home3.png"
+            alt="Hero Banner"
+            width={1920}
+            height={1000}
+            priority
+            className="hero-image"
+          />
+        </div>
+      )}
     </section>
   );
 }

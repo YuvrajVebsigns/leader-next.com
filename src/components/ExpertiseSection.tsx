@@ -41,31 +41,36 @@ export default function AboutUsSection() {
 
   const cards = [
     {
-      image: '/assets/aboutus/recognized-dark.png',
+      image: '/assets/aboutus/recognized.png',
+      hoverImage: '/assets/aboutus/recognized-dark.png',
       title: '130+ CIO Leaders',
       description:
         'Recognising influential CIOs and ICT leaders driving innovation and business transformation across industries.',
     },
     {
       image: '/assets/aboutus/technology-dark.png',
+      hoverImage: '/assets/aboutus/technology.png',
       title: 'Data-Driven Selection',
       description:
         'Winners are chosen through a transparent algorithm-based evaluation process with no jury involvement.',
     },
     {
-      image: '/assets/aboutus/winner-dark.png',
+      image: '/assets/aboutus/winner.png',
+      hoverImage: '/assets/aboutus/winner-dark.png',
       title: 'Industry Impact',
       description:
         'Celebrating leaders creating measurable technology and business impact through strategic initiatives.',
     },
     {
-      image: '/assets/aboutus/leadership-dark.png',
+      image: '/assets/aboutus/leadership.png',
+      hoverImage: '/assets/aboutus/leadership-dark.png',
       title: 'Leadership Forum',
       description:
         'A prestigious platform for networking, knowledge sharing, recognition, and industry collaboration.',
     },
     {
-      image: '/assets/aboutus/learn-dark.png',
+      image: '/assets/aboutus/learn.png',
+      hoverImage: '/assets/aboutus/learn-dark.png',
       title: 'Learn & Connect',
       description:
         'Engage with peers, gain valuable insights, and celebrate excellence in technology leadership.',

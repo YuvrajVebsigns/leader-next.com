@@ -633,7 +633,7 @@ export default function Navbar() {
           </div>
 
           <Link
-            href="/#contact-section"
+            href="/contact"
             className={`nav-link ${activeHash === '#contact-section' ? 'active' : ''}`}
             onClick={closeAllMenus}
           >
