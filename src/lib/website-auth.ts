@@ -47,7 +47,7 @@ export function getWebsiteDomain(): string {
     }
   }
 
-  return 'ciopowerlist.com';
+  return 'leader-next.com';
 }
 
 export function readStoredWebsiteAuth(domain?: string): WebsiteAuth | null {

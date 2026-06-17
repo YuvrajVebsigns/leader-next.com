@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const BACKEND_API_BASE = (process.env.NEXT_PUBLIC_API_URL || 'https://ciopowerlist.com').replace(
+const BACKEND_API_BASE = (process.env.NEXT_PUBLIC_API_URL || 'https://leader-next.com').replace(
   /\/$/,
   '',
 );
