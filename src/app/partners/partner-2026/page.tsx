@@ -29,17 +29,14 @@ export default function Partner2026Page() {
     },
     {
       title: 'Category Partner',
-      logos: ['/assets/partners/client5.png', '/assets/partners/client6.png'],
+      logos: ['/assets/partner2026/category_partner.png'],
     },
     {
       title: 'Partners',
       logos: [
-        '/assets/partners/client7.png',
-        '/assets/partners/client8.png',
-        '/assets/partners/client9.png',
-        '/assets/partners/client10.png',
-        '/assets/partners/client11.png',
-        '/assets/partners/client12.png',
+        '/assets/partner2026/partner_logo_1.png',
+        '/assets/partner2026/partner_logo_2.png',
+        '/assets/partner2026/partner_logo_3.png',
       ],
     },
   ];
@@ -57,39 +54,23 @@ export default function Partner2026Page() {
 
             <p className="partner2026-description">
               We proudly collaborate with leading brands and technology partners who support CIO
-              Power List 2026 and strengthen India enterprise technology ecosystem.
+              Power List 2026 and strengthen India&apos;s enterprise technology ecosystem.
             </p>
           </div>
 
-          {partnerGroups.map((group) => {
-            const shouldAnimate = group.logos.length > 5;
+          {partnerGroups.map((group) => (
+            <div key={group.title} className="partner-group">
+              <h2 className="partner-group-title">{group.title}</h2>
 
-            return (
-              <div key={group.title} className="partner-group">
-                <h2 className="partner-group-title">{group.title}</h2>
-
-                {shouldAnimate ? (
-                  <div className="partner-slider">
-                    <div className="partner-grid-marquee">
-                      {[...group.logos, ...group.logos].map((logo, index) => (
-                        <div key={index} className="partner-card">
-                          <img src={logo} alt={`${group.title} ${index + 1}`} />
-                        </div>
-                      ))}
-                    </div>
+              <div className="partner-grid-static">
+                {group.logos.map((logo, index) => (
+                  <div key={index} className="partner-card">
+                    <img src={logo} alt={`${group.title} ${index + 1}`} />
                   </div>
-                ) : (
-                  <div className="partner-grid-static">
-                    {group.logos.map((logo, index) => (
-                      <div key={index} className="partner-card">
-                        <img src={logo} alt={`${group.title} ${index + 1}`} />
-                      </div>
-                    ))}
-                  </div>
-                )}
+                ))}
               </div>
-            );
-          })}
+            </div>
+          ))}
         </div>
       </section>
     </main>

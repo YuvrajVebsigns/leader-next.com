@@ -633,7 +633,7 @@ export default function Navbar() {
           </div>
 
           <Link
-            href="/contact"
+            href="/#contact-section"
             className={`nav-link ${activeHash === '#contact-section' ? 'active' : ''}`}
             onClick={closeAllMenus}
           >
@@ -642,7 +642,7 @@ export default function Navbar() {
         </nav>
 
         <div className="navbar-actions">
-          <Link href="/#contact-section" className="talk-btn" onClick={closeAllMenus}>
+          <Link href="/contact-section" className="talk-btn" onClick={closeAllMenus}>
             <span>Let’s Talk</span>
 
             <div className="talk-btn-icon">

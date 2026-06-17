@@ -164,6 +164,48 @@ export default function SpeakerDetailClient({ slug }: SpeakerDetailClientProps) 
               <p className="winner-section-kicker">{section.title || 'Speaker Profiles'}</p>
               <h2>{section.title || 'Speaker Profiles'}</h2>
               <span>{section.speakers.length} members</span>
+              <h3>Speakers 2025</h3>
+            </div>
+
+            <div className="winner-section-grid">
+              {section.speakers.map((speakerItem, index) => {
+                const entry = speakerItem as Record<string, unknown>;
+                return (
+                  <article
+                    key={`${section.title}-${index}`}
+                    className="winner-profile-card winner-profile-card--red"
+                  >
+                    <div className="winner-profile-media">
+                      <img
+                        src={
+                          typeof entry.avatar === 'string' && entry.avatar
+                            ? entry.avatar
+                            : '/assets/default-winner.png'
+                        }
+                        alt={typeof entry.author === 'string' ? entry.author : 'Speaker'}
+                        className="winner-profile-image"
+                      />
+                    </div>
+
+                    <div className="winner-profile-body">
+                      <h3>{typeof entry.author === 'string' ? entry.author : 'Speaker Name'}</h3>
+                      <p className="winner-profile-category">
+                        {typeof entry.role === 'string' && entry.role
+                          ? `Company: ${entry.role.trim()}`
+                          : 'Company info unavailable'}
+                      </p>
+                      {typeof entry.quote === 'string' && entry.quote ? (
+                        <p className="winner-profile-company">&quot;{entry.quote}&quot;</p>
+                      ) : null}
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+
+            <div className="winner-section-header winner-section-header--centered">
+              <span>{section.speakers.length} members</span>
+              <h3>Partner Speakers</h3>
             </div>
 
             <div className="winner-section-grid">

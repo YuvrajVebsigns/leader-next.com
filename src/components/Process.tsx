@@ -1,6 +1,7 @@
 'use client';
 
 import { Award, Briefcase, Newspaper, Trophy, Vote } from 'lucide-react';
+import Image from 'next/image';
 
 const dataSources = [
   {
@@ -30,9 +31,19 @@ export default function CIOPowerListProcess() {
     <section className="cio-process-section">
       <div className="cio-process-container">
         <div className="cio-process-section-heading">
-          {/* <span className="cio-process-top-label">Selection Methodology</span> */}
+          <div className="aboutus-label">
+            <Image
+              src="/assets/icon.png"
+              alt="CIO Power List"
+              width={20}
+              height={20}
+              className="aboutus-label-icon"
+            />
 
-          <h2>
+            <span className="aboutus-label-text">SELECTION mETHODOLOGY</span>
+          </div>
+
+          <h2 className="aboutus-title">
             The <span>CIO Power List</span> Evaluation Process
           </h2>
 

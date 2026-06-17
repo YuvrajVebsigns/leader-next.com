@@ -58,7 +58,7 @@ export default function NotFound() {
             Back to Home
           </Link>
 
-          <Link href="/contact-section" className="notfound-btn-secondary">
+          <Link href="#/contact-section" className="notfound-btn-secondary">
             <Mail size={18} />
             Contact Us
           </Link>
