@@ -1941,7 +1941,7 @@ main {
 /* =========================================================
    FOUNDER MESSAGE SECTION
 ========================================================= */
-
+/* 
 .founder-message-section {
   background: #ffffff;
   padding: 60px 24px;
@@ -2195,11 +2195,202 @@ main {
     width: 100%;
     justify-content: center;
   }
+} */
+
+.founder-message-section {
+  position: relative;
+  padding: 110px 0;
+  background: #ffffff;
+  overflow: hidden;
 }
 
-/* =========================================================
-   ABOUT US SECTION
-========================================================= */
+.founder-message-section::before {
+  content: '';
+  position: absolute;
+  width: 420px;
+  height: 420px;
+  right: -160px;
+  top: -120px;
+  background: rgba(209, 31, 38, 0.08);
+  border-radius: 50%;
+}
+
+.founder-message-container {
+  position: relative;
+  width: min(1180px, 92%);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  align-items: center;
+  gap: 70px;
+}
+
+.founder-content {
+  max-width: 680px;
+}
+
+.founder-eyebrow {
+  display: inline-block;
+  color: #d11f26;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 18px;
+}
+
+.founder-title {
+  color: #111;
+  font-size: clamp(38px, 5vw, 64px);
+  line-height: 1.05;
+  margin-bottom: 24px;
+  letter-spacing: -1.5px;
+}
+
+.founder-title span {
+  color: #d11f26;
+}
+
+.founder-description {
+  color: #555;
+  font-size: 18px;
+  line-height: 1.8;
+  margin-bottom: 28px;
+}
+
+.founder-quote {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  padding: 24px 26px;
+  border-left: 5px solid #d11f26;
+  background: #fff5f5;
+  border-radius: 18px;
+  margin-bottom: 32px;
+}
+
+.founder-quote svg {
+  color: #d11f26;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+.founder-quote p {
+  color: #222;
+  font-size: 18px;
+  line-height: 1.7;
+  font-weight: 600;
+  margin: 0;
+}
+
+.founder-author {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 22px;
+  flex-wrap: wrap;
+}
+
+.founder-author h3 {
+  color: #111;
+  font-size: 24px;
+  margin-bottom: 6px;
+}
+
+.founder-author span {
+  color: #777;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+}
+
+.founder-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 22px;
+  background: #d11f26;
+  color: #fff;
+  border-radius: 999px;
+  text-decoration: none;
+  font-weight: 800;
+  transition: all 0.3s ease;
+}
+
+.founder-btn:hover {
+  background: #111;
+  transform: translateY(-3px);
+}
+
+.founder-image-wrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.founder-image-frame {
+  width: min(420px, 100%);
+  border-radius: 34px;
+  overflow: hidden;
+  background: linear-gradient(180deg, #f8f8f8, #ececec);
+  box-shadow: 0 26px 70px rgba(0, 0, 0, 0.14);
+}
+
+.founder-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+.founder-experience-card {
+  position: absolute;
+  left: -24px;
+  bottom: 38px;
+  display: grid;
+  gap: 2px;
+  padding: 18px 22px;
+  background: #111;
+  color: #fff;
+  border-radius: 18px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.18);
+}
+
+.founder-experience-card strong {
+  font-size: 34px;
+  line-height: 1;
+  color: #d11f26;
+}
+
+.founder-experience-card span {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+@media (max-width: 900px) {
+  .founder-message-section {
+    padding: 80px 0;
+  }
+
+  .founder-message-container {
+    grid-template-columns: 1fr;
+    gap: 44px;
+  }
+
+  .founder-content {
+    max-width: 100%;
+  }
+
+  .founder-author {
+    align-items: flex-start;
+  }
+
+  .founder-experience-card {
+    left: 16px;
+    bottom: 20px;
+  }
+}
 
 /* =========================================================
    ABOUT US SECTION
