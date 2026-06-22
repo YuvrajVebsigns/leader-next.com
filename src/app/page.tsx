@@ -1,13 +1,13 @@
 import HeroSection from '@/components/HeroSection';
 import FoundersMessage from '@/components/FoundersMessage';
 import ExpertiseSection from '@/components/ExpertiseSection';
-import KeyClient from '@/components/KeyClient';
+// import KeyClient from '@/components/KeyClient';
 import ProjectsSection from '@/components/ProjectsSection';
 // import FAQSection from '@/components/FAQSection';
 import ContactSection from '@/components/ContactSection';
 import BlogsSection from '@/components/BlogsSection';
 // import DialoguesSection from '@/components/DialoguesSection';
-import CIOPowerListProcess from '@/components/Process';
+// import CIOPowerListProcess from '@/components/Process';
 
 export default function Home() {
   return (
@@ -17,8 +17,8 @@ export default function Home() {
       <FoundersMessage />
       <ExpertiseSection />
       {/* <TeamSection /> */}
-      <KeyClient />
-      <CIOPowerListProcess />
+      {/* <KeyClient /> */}
+      {/* <CIOPowerListProcess /> */}
       <ProjectsSection />
       {/* <ResearchSection />
       <Brands /> */}

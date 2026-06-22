@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowUpRight, Handshake, Sparkles, Trophy } from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
 
 export default function Partners2025() {
   return (
@@ -18,23 +18,41 @@ export default function Partners2025() {
       </section>
 
       <section className="partners-section">
-        <div className="partners-container partners-grid">
-          <div className="partners-card">
-            <Handshake size={38} />
-            <h2>Powerful Partnerships</h2>
-            <p>Building meaningful collaborations with leading organizations and innovators.</p>
+        <div className="partners-container">
+          <h2 className="partner-category-title">Premium Partners</h2>
+
+          <div className="partners-grid premium-grid">
+            <div className="partner-logo-card">
+              <img src="/assets/partners/freshworks.png" alt="Freshworks" />
+            </div>
+
+            <div className="partner-logo-card">
+              <img src="/assets/partners/juniper-redington.png" alt="Juniper Redington" />
+            </div>
+
+            <div className="partner-logo-card">
+              <img src="/assets/partners/lenovo.png" alt="Lenovo" />
+            </div>
           </div>
 
-          <div className="partners-card">
-            <Sparkles size={38} />
-            <h2>Future-Ready Vision</h2>
-            <p>Supporting leaders who are shaping the future of enterprise technology.</p>
-          </div>
+          <h2 className="partner-category-title associate-title">Associate Partners</h2>
 
-          <div className="partners-card">
-            <Trophy size={38} />
-            <h2>Leadership Impact</h2>
-            <p>Recognizing partnership excellence and shared commitment to industry growth.</p>
+          <div className="partners-grid associate-grid">
+            <div className="partner-logo-card">
+              <img src="/assets/partners/adaptive-tattva.png" alt="Adaptive Tattva" />
+            </div>
+
+            <div className="partner-logo-card">
+              <img src="/assets/partners/archon.png" alt="Archon" />
+            </div>
+
+            <div className="partner-logo-card">
+              <img src="/assets/partners/barracuda.png" alt="Barracuda" />
+            </div>
+
+            <div className="partner-logo-card">
+              <img src="/assets/partners/citadel-biokey.png" alt="Citadel Bio-Key" />
+            </div>
           </div>
         </div>
       </section>

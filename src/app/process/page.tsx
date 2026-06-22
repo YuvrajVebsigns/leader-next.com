@@ -111,7 +111,7 @@ export default function ProcessPage() {
             Make sure your documentation, employer approval, and professional achievements are ready
             before submitting your application.
           </p>
-          <a href="/register" className="process-btn">
+          <a className="process-btn">
             Apply Now <MessageSquare size={18} />
           </a>
         </div>
