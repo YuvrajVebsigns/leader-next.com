@@ -77,7 +77,7 @@ export default function Partners2023() {
 
           <div className="partners-grid presenting-grid">
             <div className="partner-logo-card">
-              <img src="/assets/partners/2023/google-cloud.png" alt="Google Cloud" />
+              <img src="/assets/partner/Google-Cloud-200x73.webp" alt="Google Cloud" />
             </div>
           </div>
 
@@ -85,11 +85,11 @@ export default function Partners2023() {
 
           <div className="partners-grid premium-grid">
             <div className="partner-logo-card">
-              <img src="/assets/partners/2023/symphony-ai.png" alt="SymphonyAI Summit" />
+              <img src="/assets/partner/symphony-ai.webp" alt="SymphonyAI Summit" />
             </div>
 
             <div className="partner-logo-card">
-              <img src="/assets/partners/2023/tata-communications.png" alt="Tata Communications" />
+              <img src="/assets/partner/Tata-Communications.Webp" alt="Tata Communications" />
             </div>
           </div>
 
@@ -97,15 +97,15 @@ export default function Partners2023() {
 
           <div className="partners-grid associate-grid">
             <div className="partner-logo-card">
-              <img src="/assets/partners/2023/archon.png" alt="Archon" />
+              <img src="/assets/partner/Archon.webp" alt="Archon" />
             </div>
 
             <div className="partner-logo-card">
-              <img src="/assets/partners/2023/rubrik.png" alt="Rubrik" />
+              <img src="/assets/partner/Rubrik-200x73.webp" alt="Rubrik" />
             </div>
 
             <div className="partner-logo-card">
-              <img src="/assets/partners/2023/sigma-byte.png" alt="Sigma Byte" />
+              <img src="/assets/partner/SigmaByte-1-100x73.webp" alt="Sigma Byte" />
             </div>
           </div>
         </div>

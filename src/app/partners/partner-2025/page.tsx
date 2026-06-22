@@ -23,15 +23,15 @@ export default function Partners2025() {
 
           <div className="partners-grid premium-grid">
             <div className="partner-logo-card">
-              <img src="/assets/partners/freshworks.png" alt="Freshworks" />
+              <img src="/assets/partner/freshworks.webp" alt="Freshworks" />
             </div>
 
             <div className="partner-logo-card">
-              <img src="/assets/partners/juniper-redington.png" alt="Juniper Redington" />
+              <img src="/assets/partner/juniper-Redington.webp" alt="Juniper Redington" />
             </div>
 
             <div className="partner-logo-card">
-              <img src="/assets/partners/lenovo.png" alt="Lenovo" />
+              <img src="/assets/partner/Lenovo.webp" alt="Lenovo" />
             </div>
           </div>
 
@@ -39,19 +39,19 @@ export default function Partners2025() {
 
           <div className="partners-grid associate-grid">
             <div className="partner-logo-card">
-              <img src="/assets/partners/adaptive-tattva.png" alt="Adaptive Tattva" />
+              <img src="/assets/partner/Adaptive.webp" alt="Adaptive Tattva" />
             </div>
 
             <div className="partner-logo-card">
-              <img src="/assets/partners/archon.png" alt="Archon" />
+              <img src="/assets/partner/Archon.webp" alt="Archon" />
             </div>
 
             <div className="partner-logo-card">
-              <img src="/assets/partners/barracuda.png" alt="Barracuda" />
+              <img src="/assets/partner/Barracuda.webp" alt="Barracuda" />
             </div>
 
             <div className="partner-logo-card">
-              <img src="/assets/partners/citadel-biokey.png" alt="Citadel Bio-Key" />
+              <img src="/assets/partner/CITALDEL-BIO-Key.webp" alt="Citadel Bio-Key" />
             </div>
           </div>
         </div>
