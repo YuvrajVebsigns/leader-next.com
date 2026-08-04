@@ -287,10 +287,21 @@ export default function ContactSection() {
               priority
             />
 
-            {/* Dots */}
-            <span className="map-dot dot-1"></span>
-            <span className="map-dot dot-2"></span>
-            <span className="map-dot dot-3"></span>
+            {/* Map Locations */}
+            <div className="map-location location-dubai">
+              <span className="map-dot"></span>
+              <span className="map-label">Dubai</span>
+            </div>
+
+            <div className="map-location location-india">
+              <span className="map-dot"></span>
+              <span className="map-label">India</span>
+            </div>
+
+            <div className="map-location location-singapore">
+              <span className="map-dot"></span>
+              <span className="map-label">Singapore</span>
+            </div>
           </div>
         </div>
 

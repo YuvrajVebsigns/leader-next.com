@@ -7,6 +7,7 @@ import Navbar from '@/components/Navbar';
 import ScrollProgress from '@/components/ScrollProgress';
 import ScrollAnimator from '@/components/ScrollAnimator';
 import Footer from '@/components/Footer';
+import CookieConsent from '@/components/CookieConsent';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -33,7 +34,10 @@ export default function RootLayout({
         <Preloader />
         <ScrollProgress />
         <ScrollAnimator />
-        <QueryProvider>{children}</QueryProvider>
+        <QueryProvider>
+          {children}
+          <CookieConsent />
+        </QueryProvider>
         <Footer />
       </body>
     </html>

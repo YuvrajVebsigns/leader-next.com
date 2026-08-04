@@ -190,7 +190,7 @@ export default function Navbar() {
 
           <Link
             href="/process"
-            className={`nav-link ${pathname === '/nominate' ? 'active' : ''}`}
+            className={`nav-link ${pathname === '/process' ? 'active' : ''}`}
             onClick={closeAllMenus}
           >
             Process
