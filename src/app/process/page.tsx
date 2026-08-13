@@ -1,6 +1,6 @@
 'use client';
 
-import { CheckCircle, Users, Award, Search, ClipboardCheck, MessageSquare } from 'lucide-react';
+import { CheckCircle, Users, Award, Search } from 'lucide-react';
 
 const processSteps = [
   'Combining data on achievements till date.',
@@ -100,20 +100,6 @@ export default function ProcessPage() {
               </div>
             ))}
           </div>
-        </div>
-      </section>
-
-      <section className="process-cta">
-        <div className="process-container cta-box">
-          <ClipboardCheck size={42} />
-          <h2>Ready to Apply for LeaderNext 2026?</h2>
-          <p>
-            Make sure your documentation, employer approval, and professional achievements are ready
-            before submitting your application.
-          </p>
-          <a className="process-btn">
-            Apply Now <MessageSquare size={18} />
-          </a>
         </div>
       </section>
     </main>

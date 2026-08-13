@@ -202,9 +202,9 @@ export default function BlogsSection() {
             <span className="blogs-subtitle-text">INSIGHTS & IDEAS</span>
           </span>
 
-          <h2 className="blogs-title">
+          {/* <h2 className="blogs-title">
             Our <span>Blogs</span>
-          </h2>
+          </h2> */}
         </div>
 
         <div className="blogs-grid">
@@ -218,17 +218,42 @@ export default function BlogsSection() {
             const liked = likedBlogs.has(String(blog.id));
 
             return (
+              // <div className="blog-card" key={String(blog.id)} ref={blogRefs[index]}>
+              //   <div className="blog-image-wrapper">
+              //     <Image
+              //       src={getBlogImage(blog)}
+              //       alt={blog.title}
+              //       width={420}
+              //       height={320}
+              //       className="blog-image"
+              //       unoptimized
+              //     />
+              //   </div>
+
+              //   <div className="blog-content">
+              //     <div className="blog-meta">
+              //       <span className="blog-category">{getBlogCategory(blog)}</span>
+              //     </div>
+
+              //     <h4 className="blog-heading blog-heading-fixed">{blog.title}</h4>
+
               <div className="blog-card" key={String(blog.id)} ref={blogRefs[index]}>
-                <div className="blog-image-wrapper">
-                  <Image
-                    src={getBlogImage(blog)}
-                    alt={blog.title}
-                    width={420}
-                    height={320}
-                    className="blog-image"
-                    unoptimized
-                  />
-                </div>
+                <Link
+                  href={`/blog/${blog.slug}`}
+                  className="blog-image-link"
+                  aria-label={`Read ${blog.title}`}
+                >
+                  <div className="blog-image-wrapper">
+                    <Image
+                      src={getBlogImage(blog)}
+                      alt={blog.title}
+                      width={420}
+                      height={320}
+                      className="blog-image"
+                      unoptimized
+                    />
+                  </div>
+                </Link>
 
                 <div className="blog-content">
                   <div className="blog-meta">

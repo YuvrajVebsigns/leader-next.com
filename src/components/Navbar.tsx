@@ -161,7 +161,7 @@ export default function Navbar() {
             priority
           />
         </Link> */}
-        <Link href="/" className="footer-logo">
+        <Link href="/" className="footer-logo1">
           <Image
             src="/assets/logo/leader-next-logo.png"
             alt="Core Media"
@@ -178,6 +178,18 @@ export default function Navbar() {
             onClick={closeAllMenus}
           >
             Home
+          </Link>
+
+          {/* =================================================
+              ABOUT US
+          ================================================= */}
+
+          <Link
+            href="/aboutus"
+            className={`nav-link ${pathname?.startsWith('/aboutus') ? 'active' : ''}`}
+            onClick={closeAllMenus}
+          >
+            About Us
           </Link>
 
           <Link
@@ -235,7 +247,7 @@ export default function Navbar() {
             )}
           </div>
 
-          <Link
+          {/* <Link
             href="/blog"
             className={`nav-link ${pathname === '/blog' ? 'active' : ''}`}
             onClick={closeAllMenus}
@@ -249,7 +261,7 @@ export default function Navbar() {
             onClick={closeAllMenus}
           >
             Event
-          </Link>
+          </Link> */}
 
           <div
             className={`nav-dropdown ${winnersOpen ? 'open' : ''}`}
@@ -398,6 +410,14 @@ export default function Navbar() {
               </div>
             )}
           </div>
+
+          <Link
+            href="/nominate"
+            className={`nav-link ${pathname === '/nominate' ? 'active' : ''}`}
+            onClick={closeAllMenus}
+          >
+            Nomination
+          </Link>
 
           <Link
             href="/#contact-section"

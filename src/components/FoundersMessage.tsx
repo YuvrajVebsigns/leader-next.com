@@ -81,7 +81,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowUpRight, Quote } from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 
 export default function FoundersMessage() {
@@ -96,23 +96,31 @@ export default function FoundersMessage() {
         <div className="founder-content">
           <span className="founder-eyebrow">Founder’s Message</span>
 
-          <h2 className="founder-title">
+          {/* <h2 className="founder-title">
             Building connections in a <span>digital world.</span>
-          </h2>
+          </h2> */}
 
           <p className="founder-description">
-            For 13 years, CORE Media has innovated at the intersection of ICT and marketing. We
-            don’t just deliver messages; we build bespoke ecosystems that drive meaningful impact
-            for India’s leading stakeholders.
+            The future technology leaders are poised to revolutionize the business world like never
+            before. With their visionary approach and deep understanding of the evolving technology
+            landscape, they will be the architects of transformative change. Hand in hand with
+            technologies like AI, IoT, Virtual reality, etc., they are all set to disrupt
+            traditional business models and drive innovation across industries.
           </p>
 
-          <div className="founder-quote">
+          <div className="founder-readmore-wrap">
+            <Link href="/foundermessage" className="founder-readmore-btn">
+              Read more
+            </Link>
+          </div>
+
+          {/* <div className="founder-quote">
             <Quote size={24} />
             <p>
               We innovate to build relationships that deliver exceptional results, every single
               time.
             </p>
-          </div>
+          </div> */}
 
           <div className="founder-author">
             <div>
@@ -130,7 +138,7 @@ export default function FoundersMessage() {
         <div className="founder-image-wrapper">
           <div className="founder-image-frame">
             <Image
-              src="/assets/team/Anoop-Mathur.png"
+              src="/assets/team/AnoopMathur.png"
               alt="Anoop Mathur - Founder"
               width={520}
               height={620}
@@ -139,10 +147,10 @@ export default function FoundersMessage() {
             />
           </div>
 
-          <div className="founder-experience-card">
+          {/* <div className="founder-experience-card">
             <strong>13+</strong>
             <span>Years of Impact</span>
-          </div>
+          </div> */}
         </div>
       </div>
     </section>
