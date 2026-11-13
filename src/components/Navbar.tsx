@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from 'react';
 import { usePathname } from 'next/navigation';
 
 const winnerLinks = [
+  { label: 'Winner 2026', href: '/winners/winner-2026' },
   { label: 'Winner 2025', href: '/winners/winner-2025' },
   { label: 'Winner 2024', href: '/winners/winner-2024' },
   { label: 'Winner 2023', href: '/winners/winner-2023' },
@@ -192,13 +193,13 @@ export default function Navbar() {
             About Us
           </Link>
 
-          <Link
+          {/*<Link
             href="/register"
             className={`nav-link ${pathname === '/register' ? 'active' : ''}`}
             onClick={closeAllMenus}
           >
             Registration
-          </Link>
+          </Link>*/}
 
           <Link
             href="/process"
