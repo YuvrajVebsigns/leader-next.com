@@ -194,7 +194,12 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import { useEffect, useState } from 'react';
-import { fetchWebsiteEvents, type WebsiteEvent } from '@/services/events.service';
+import EventCard from '@/components/EventCard';
+import {
+  fetchWebsiteEvents,
+  getWebsiteEventImage,
+  type WebsiteEvent,
+} from '@/services/events.service';
 
 function getStoredWebsiteId(): string | undefined {
   if (typeof window === 'undefined') return undefined;
@@ -216,24 +221,6 @@ function getStoredWebsiteId(): string | undefined {
   return undefined;
 }
 
-function getEventImage(event: WebsiteEvent): string {
-  if (event.bannerImage?.medium) return event.bannerImage.medium;
-  if (event.bannerImage?.small) return event.bannerImage.small;
-  if (event.bannerImage?.large) return event.bannerImage.large;
-  if (event.bannerImage?.original) return event.bannerImage.original;
-
-  if (event.bannerImageId?.urlVariants?.medium) return event.bannerImageId.urlVariants.medium;
-  if (event.bannerImageId?.urlVariants?.small) return event.bannerImageId.urlVariants.small;
-  if (event.bannerImageId?.urlVariants?.large) return event.bannerImageId.urlVariants.large;
-  if (event.bannerImageId?.url) return event.bannerImageId.url;
-
-  if (typeof event.image === 'string') return event.image;
-  if (typeof event.heroImage === 'string') return event.heroImage;
-  if (typeof event.banner === 'string') return event.banner;
-
-  return '/assets/blogs/blog-1.webp';
-}
-
 function getEventTitle(event: WebsiteEvent): string {
   return event.title || 'Event';
 }
@@ -252,8 +239,41 @@ function getEventCategory(event: WebsiteEvent): string {
   return event.type || event.category || 'Events';
 }
 
+type EventFormatFilter = 'all' | 'online' | 'offline';
+
+const eventFormatFilters: { value: EventFormatFilter; label: string }[] = [
+  { value: 'all', label: 'All' },
+  { value: 'online', label: 'Online' },
+  { value: 'offline', label: 'Offline' },
+];
+
+function getEventFormat(event: WebsiteEvent): 'online' | 'offline' | null {
+  const format = event.type?.trim().toLowerCase();
+  return format === 'online' || format === 'offline' ? format : null;
+}
+
+function NoEventsEmptyState() {
+  return (
+    <div className="events-empty">
+      <Image
+        src="/noevents img.webp"
+        alt="No events just yet"
+        width={1024}
+        height={1024}
+        className="events-empty-image"
+      />
+    </div>
+  );
+}
+
 export default function EventsPage() {
   const [events, setEvents] = useState<WebsiteEvent[] | null>(null);
+  const [selectedFormat, setSelectedFormat] = useState<EventFormatFilter>('all');
+
+  const filteredEvents =
+    events?.filter(
+      (event) => selectedFormat === 'all' || getEventFormat(event) === selectedFormat,
+    ) ?? null;
 
   useEffect(() => {
     fetchWebsiteEvents(getStoredWebsiteId())
@@ -275,20 +295,6 @@ export default function EventsPage() {
   const heroContentRef = useScrollAnimation<HTMLDivElement>({
     animationClass: 'animate-fade-in-left',
     initialTransform: 'translateX(-40px)',
-    threshold: 0.12,
-    once: false,
-  });
-
-  const leftRef = useScrollAnimation<HTMLDivElement>({
-    animationClass: 'animate-fade-in-left',
-    initialTransform: 'translateX(-40px)',
-    threshold: 0.12,
-    once: false,
-  });
-
-  const rightRef = useScrollAnimation<HTMLDivElement>({
-    animationClass: 'animate-fade-in-right',
-    initialTransform: 'translateX(40px)',
     threshold: 0.12,
     once: false,
   });
@@ -330,42 +336,44 @@ export default function EventsPage() {
         </div>
       </section>
 
-      <section className="project-section">
+      <section className="project-section event-listing-section">
         <div className="project-container">
-          <div className="project-grid">
+          <div className="event-format-filters" role="group" aria-label="Filter events by format">
+            {eventFormatFilters.map((filter) => (
+              <button
+                key={filter.value}
+                type="button"
+                className="event-format-filter"
+                aria-pressed={selectedFormat === filter.value}
+                onClick={() => setSelectedFormat(filter.value)}
+              >
+                {filter.label}
+              </button>
+            ))}
+          </div>
+
+          <div className="event-grid" aria-live="polite">
             {events === null ? (
               <div className="events-loading">Loading events…</div>
             ) : events.length === 0 ? (
-              <div className="events-empty">No events available at the moment.</div>
+              <NoEventsEmptyState />
+            ) : filteredEvents?.length === 0 ? (
+              <NoEventsEmptyState />
             ) : (
-              events.map((item, index) => {
+              filteredEvents?.map((item) => {
                 const title = getEventTitle(item);
                 const slug = getEventSlug(item);
-                const imageSrc = getEventImage(item);
+                const imageSrc = getWebsiteEventImage(item);
                 const category = getEventCategory(item);
 
                 return (
-                  <Link key={item.id || slug} href={`/events/${slug}`}>
-                    <div className="project-card" ref={index % 2 === 0 ? leftRef : rightRef}>
-                      <div className="project-image-wrap">
-                        <Image
-                          src={imageSrc}
-                          alt={title}
-                          fill
-                          className="project-image"
-                          unoptimized={imageSrc.startsWith('http')}
-                        />
-                      </div>
-
-                      <div className="project-overlay">
-                        <span className="project-category">{category}</span>
-
-                        <div className="project-content">
-                          <h3>{title}</h3>
-                        </div>
-                      </div>
-                    </div>
-                  </Link>
+                  <EventCard
+                    key={item.id || slug}
+                    title={title}
+                    category={category}
+                    image={imageSrc}
+                    href={`/events/${slug}`}
+                  />
                 );
               })
             )}

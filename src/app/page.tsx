@@ -1,6 +1,7 @@
 import HeroSection from '@/components/HeroSection';
 import FoundersMessage from '@/components/FoundersMessage';
 import ExpertiseSection from '@/components/ExpertiseSection';
+import PartnerSection from '@/components/PartnerSection';
 // import KeyClient from '@/components/KeyClient';
 import ProjectsSection from '@/components/ProjectsSection';
 // import FAQSection from '@/components/FAQSection';
@@ -16,6 +17,7 @@ export default function Home() {
       <HeroSection />
       <FoundersMessage />
       <ExpertiseSection />
+      <PartnerSection />
       {/* <TeamSection /> */}
       {/* <KeyClient /> */}
       {/* <CIOPowerListProcess /> */}

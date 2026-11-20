@@ -278,41 +278,20 @@ export default function BlogCommentsPanel({ blogId }: BlogCommentsPanelProps) {
         ))}
       </div>
 
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          gap: '12px',
-          marginTop: '18px',
-          marginBottom: '14px',
-        }}
-      >
-        <p className="blog-comments-panel-form-title" style={{ margin: 0 }}>
-          Post a comment
-        </p>
-
+      <div className="blog-comments-panel-actions">
+        <p className="blog-comments-panel-form-title">Post a comment</p>
         <button
           type="button"
           onClick={() => setShowForm((prev) => !prev)}
-          style={{
-            background: '#8E0101',
-            color: '#ffffff',
-            border: 'none',
-            borderRadius: '999px',
-            padding: '9px 16px',
-            cursor: 'pointer',
-            fontSize: '13px',
-            fontWeight: 600,
-            whiteSpace: 'nowrap',
-          }}
+          aria-expanded={showForm}
+          aria-controls="blog-comment-form"
         >
           {showForm ? 'Close' : 'Add Comment'}
         </button>
       </div>
 
       {showForm ? (
-        <form className="blog-comments-panel-form" onSubmit={handleSubmit}>
+        <form id="blog-comment-form" className="blog-comments-panel-form" onSubmit={handleSubmit}>
           {errorMessage ? <p className="blog-comments-panel-error">{errorMessage}</p> : null}
           {successMessage ? <p className="blog-comments-panel-success">{successMessage}</p> : null}
 

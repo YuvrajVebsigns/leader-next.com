@@ -78,6 +78,8 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import { FaLinkedinIn } from 'react-icons/fa';
+import { getLinkedInProfileUrl, removeLinkedInUrls } from '@/lib/social-links';
 import { fetchWebsitePageBySlug } from '@/services/pages.service';
 
 type JuryMember = {
@@ -157,23 +159,40 @@ export default function Jury2025() {
 
           {!loading && !error && hasMembers && (
             <div className="jury-grid">
-              {juryMembers.map((member, index) => (
-                <article key={`${member.author}-${index}`} className="jury-card">
-                  <div className="jury-image-wrap">
-                    <img
-                      src={member.avatar || fallbackImage}
-                      alt={member.author}
-                      className="jury-image"
-                    />
-                  </div>
+              {juryMembers.map((member, index) => {
+                const linkedInUrl = getLinkedInProfileUrl(member, [member.role, member.quote]);
+                const role = removeLinkedInUrls(member.role);
+                const quote = removeLinkedInUrls(member.quote);
 
-                  <div className="jury-info">
-                    <h3 className="jury-name">{member.author}</h3>
-                    <p className="jury-position">{member.role}</p>
-                    <p className="jury-company">{member.quote}</p>
-                  </div>
-                </article>
-              ))}
+                return (
+                  <article key={`${member.author}-${index}`} className="jury-card">
+                    <div className="jury-image-wrap">
+                      <img
+                        src={member.avatar || fallbackImage}
+                        alt={member.author}
+                        className="jury-image"
+                      />
+                    </div>
+
+                    <div className="jury-info">
+                      <h3 className="jury-name">{member.author}</h3>
+                      {role ? <p className="jury-position">{role}</p> : null}
+                      {quote ? <p className="jury-company">{quote}</p> : null}
+                      {linkedInUrl ? (
+                        <a
+                          href={linkedInUrl}
+                          className="profile-linkedin"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label={`Open ${member.author}'s LinkedIn profile`}
+                        >
+                          <FaLinkedinIn aria-hidden="true" size={16} />
+                        </a>
+                      ) : null}
+                    </div>
+                  </article>
+                );
+              })}
             </div>
           )}
         </div>

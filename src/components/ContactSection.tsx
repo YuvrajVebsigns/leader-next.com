@@ -236,7 +236,7 @@ declare global {
         options: {
           sitekey: string;
           theme?: 'light' | 'dark' | 'auto';
-          size?: 'normal' | 'compact' | 'flexible' | 'invisible';
+          size?: 'normal' | 'compact' | 'flexible';
           execution?: 'render' | 'execute';
           callback?: (token: string) => void;
           'expired-callback'?: () => void;
@@ -281,6 +281,8 @@ export default function ContactSection() {
 
   const turnstileWidgetIdRef = useRef<string | null>(null);
 
+  const captchaAttemptedRef = useRef(false);
+
   /* =========================================================
      UI STATE
   ========================================================= */
@@ -317,8 +319,6 @@ export default function ContactSection() {
     if (!turnstileSiteKey) {
       setCaptchaStatus('error');
 
-      setPopupMessage('CAPTCHA configuration is missing. Please try again later.');
-
       return;
     }
 
@@ -331,8 +331,6 @@ export default function ContactSection() {
 
       if (!window.turnstile) {
         setCaptchaStatus('error');
-
-        setPopupMessage('Unable to load CAPTCHA verification. Please try again later.');
 
         return;
       }
@@ -358,11 +356,6 @@ export default function ContactSection() {
           sitekey: turnstileSiteKey,
 
           /*
-           * Invisible Turnstile.
-           */
-          size: 'invisible',
-
-          /*
            * Verification starts only when execute()
            * is called.
            */
@@ -383,6 +376,7 @@ export default function ContactSection() {
             setCaptchaStatus('verified');
 
             setIsRefreshingCaptcha(false);
+            captchaAttemptedRef.current = false;
 
             /*
              * Clear old CAPTCHA-related messages.
@@ -404,7 +398,10 @@ export default function ContactSection() {
 
             setIsRefreshingCaptcha(false);
 
-            setPopupMessage('CAPTCHA verification expired. Please verify again.');
+            if (captchaAttemptedRef.current) {
+              setPopupMessage('CAPTCHA verification expired. Please verify again.');
+              captchaAttemptedRef.current = false;
+            }
           },
 
           /*
@@ -421,12 +418,16 @@ export default function ContactSection() {
 
             setIsRefreshingCaptcha(false);
 
-            if (errorCode === '110200') {
-              setPopupMessage(
-                'CAPTCHA domain is not authorized in Cloudflare. Please add this website hostname to Turnstile Hostname Management.',
-              );
-            } else {
-              setPopupMessage('CAPTCHA verification failed. Please try again.');
+            if (captchaAttemptedRef.current) {
+              if (errorCode === '110200') {
+                setPopupMessage(
+                  'CAPTCHA domain is not authorized in Cloudflare. Please add this website hostname to Turnstile Hostname Management.',
+                );
+              } else {
+                setPopupMessage('CAPTCHA verification failed. Please try again.');
+              }
+
+              captchaAttemptedRef.current = false;
             }
           },
 
@@ -444,7 +445,10 @@ export default function ContactSection() {
 
             setIsRefreshingCaptcha(false);
 
-            setPopupMessage('CAPTCHA verification timed out. Please try again.');
+            if (captchaAttemptedRef.current) {
+              setPopupMessage('CAPTCHA verification timed out. Please try again.');
+              captchaAttemptedRef.current = false;
+            }
           },
         });
 
@@ -463,8 +467,6 @@ export default function ContactSection() {
         setCaptchaStatus('ready');
       } catch {
         setCaptchaStatus('error');
-
-        setPopupMessage('Unable to load CAPTCHA. Please try again later.');
       }
     };
 
@@ -508,8 +510,6 @@ export default function ContactSection() {
       }
 
       setCaptchaStatus('error');
-
-      setPopupMessage('Unable to connect to CAPTCHA service. Please try again later.');
     });
 
     document.head.appendChild(script);
@@ -582,11 +582,14 @@ export default function ContactSection() {
       return;
     }
 
+    captchaAttemptedRef.current = true;
+
     /*
      * Make sure Turnstile is loaded.
      */
     if (!window.turnstile) {
       setCaptchaStatus('error');
+      captchaAttemptedRef.current = false;
 
       setPopupMessage('CAPTCHA is still loading. Please try again.');
 
@@ -598,6 +601,7 @@ export default function ContactSection() {
      */
     if (!turnstileWidgetIdRef.current) {
       setCaptchaStatus('error');
+      captchaAttemptedRef.current = false;
 
       setPopupMessage('CAPTCHA is not ready. Please refresh the page and try again.');
 
@@ -621,6 +625,7 @@ export default function ContactSection() {
       window.turnstile.execute(turnstileWidgetIdRef.current);
     } catch {
       setCaptchaStatus('error');
+      captchaAttemptedRef.current = false;
 
       setPopupMessage('Unable to start CAPTCHA verification. Please try again.');
     }
@@ -641,6 +646,8 @@ export default function ContactSection() {
   ========================================================= */
 
   function resetTurnstile() {
+    captchaAttemptedRef.current = false;
+
     /*
      * Remove current token.
      */

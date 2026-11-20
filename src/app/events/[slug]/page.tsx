@@ -9,11 +9,14 @@ import { useEffect, useState } from 'react';
 import ClientErrorBoundary from '@/components/ClientErrorBoundary';
 import EventDetailsAnimated from '@/components/EventDetailsAnimated';
 import EventSponsorsSection from '@/components/EventSponsorsSection';
+import { resolveEventSponsors } from '@/lib/event-sponsors';
 import {
   fetchWebsiteEventByIdOrSlug,
   fetchWebsiteEvents,
+  getWebsiteEventImage,
   type WebsiteEvent,
 } from '@/services/events.service';
+import type { WebsiteSponsor } from '@/services/sponsors.service';
 
 type EventSection = {
   heading: string;
@@ -46,6 +49,8 @@ export default function EventDetailsPage() {
   const slug: string = Array.isArray(params?.slug) ? (params.slug[0] ?? '') : (params?.slug ?? '');
 
   const [event, setEvent] = useState<WebsiteEvent | null>(null);
+  const [eventSponsors, setEventSponsors] = useState<WebsiteSponsor[]>([]);
+  const [sponsorsError, setSponsorsError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showShareOptions, setShowShareOptions] = useState(false);
@@ -102,6 +107,9 @@ export default function EventDetailsPage() {
     let isMounted = true;
 
     async function loadEvent() {
+      setEventSponsors([]);
+      setSponsorsError(null);
+
       if (!slug) {
         if (isMounted) {
           setError('Event slug is missing.');
@@ -136,6 +144,24 @@ export default function EventDetailsPage() {
         if (isMounted) {
           setEvent(loadedEvent);
           setError(loadedEvent ? null : 'Event not found.');
+        }
+
+        if (loadedEvent) {
+          try {
+            const sponsors = await resolveEventSponsors(loadedEvent);
+
+            if (isMounted) {
+              setEventSponsors(sponsors);
+            }
+          } catch (sponsorLoadError) {
+            if (isMounted) {
+              setSponsorsError(
+                sponsorLoadError instanceof Error
+                  ? sponsorLoadError.message
+                  : 'Failed to load event sponsors.',
+              );
+            }
+          }
         }
       } catch (loadError) {
         if (isMounted) {
@@ -264,12 +290,7 @@ export default function EventDetailsPage() {
       getEventField(event, 'organizer') ?? getEventField(event, 'author') ?? 'CORE Media',
     ),
     date: String(getEventField(event, 'startsAt') ?? getEventField(event, 'date') ?? ''),
-    heroImage: String(
-      getEventField(event, 'image') ??
-        getEventField(event, 'heroImage') ??
-        getEventField(event, 'banner') ??
-        '/assets/blogs/blog-1.webp',
-    ),
+    heroImage: getWebsiteEventImage(event),
     badge: String(getEventField(event, 'category') ?? 'Events'),
     summary: extractTextFromContent(
       getEventField(event, 'description') ?? getEventField(event, 'summary') ?? '',
@@ -389,7 +410,11 @@ export default function EventDetailsPage() {
         <ClientErrorBoundary>
           <EventDetailsAnimated featuredEvent={featuredEvent} readableSlug={readableSlug} />
 
-          <EventSponsorsSection />
+          {sponsorsError ? (
+            <p role="alert">Unable to load event sponsors: {sponsorsError}</p>
+          ) : (
+            <EventSponsorsSection sponsors={eventSponsors} />
+          )}
 
           {contentBlocks.length > 0 ? (
             <div>{contentBlocks.map((block, index) => renderBlock(block, index))}</div>

@@ -2,10 +2,12 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowUpRight, ChevronRight, ChevronLeft, Heart, MessageCircle } from 'lucide-react';
+import { ChevronRight, ChevronLeft, Heart, MessageCircle } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
+import BlogCard from '@/components/BlogCard';
 import {
+  getWebsiteBlogImage,
   fetchWebsiteBlogs,
   submitWebsiteBlogLike,
   type WebsiteBlogItem,
@@ -16,11 +18,7 @@ function getBlogCategory(blog: WebsiteBlogItem) {
 }
 
 function getBlogAuthor(blog: WebsiteBlogItem) {
-  return blog.author?.fullName || 'CORE Media Team';
-}
-
-function getBlogImage(blog: WebsiteBlogItem) {
-  return blog.featureImage || blog.seo?.ogImage || '/assets/blogs/blog-1.png';
+  return blog.author?.name || blog.author?.fullName || 'CORE Media Team';
 }
 
 function getBlogDescription(blog: WebsiteBlogItem) {
@@ -43,10 +41,10 @@ function AnimatedBlogCard({ blog, index, variant = 'animate-fade-in' }: Animated
     typeof blog.engagement?.commentsCount === 'number' ? blog.engagement.commentsCount : 0;
 
   const fallbackImage = '/assets/blogs/blog-1.png';
-  const [imageSrc, setImageSrc] = useState<string>(getBlogImage(blog));
+  const [imageSrc, setImageSrc] = useState<string>(getWebsiteBlogImage(blog));
 
   useEffect(() => {
-    setImageSrc(getBlogImage(blog));
+    setImageSrc(getWebsiteBlogImage(blog));
   }, [blog]);
 
   const [localLikes, setLocalLikes] = useState<number>(likesCount);
@@ -139,39 +137,23 @@ function AnimatedBlogCard({ blog, index, variant = 'animate-fade-in' }: Animated
   });
 
   return (
-    <article ref={ref} className="blogpage-card" style={{ transitionDelay: `${index * 60}ms` }}>
-      <div className="blogpage-image-wrap">
-        <Image
-          src={imageSrc}
-          alt={blog.title}
-          width={420}
-          height={260}
-          className="blogpage-image"
-          unoptimized
-          onError={() => {
-            if (imageSrc !== fallbackImage) {
-              setImageSrc(fallbackImage);
-            }
-          }}
-        />
-      </div>
-
-      <div className="blogpage-content">
-        <div className="blogpage-meta">
-          <span className="blogpage-category">{getBlogCategory(blog)}</span>
-        </div>
-
-        <h4 className="blogpage-heading blogpage-heading-fixed">{blog.title}</h4>
-
-        <div className="blogpage-footer">
-          <Link href={`/blog/${blog.slug}`} className="blogpage-readmore">
-            Read More
-            <span className="blogpage-arrow">
-              <ArrowUpRight size={12} />
-            </span>
-          </Link>
-
-          <span className="blogpage-engagement" aria-label="Blog engagement">
+    <div ref={ref} className="blog-design-item" style={{ transitionDelay: `${index * 60}ms` }}>
+      <BlogCard
+        title={blog.title}
+        excerpt={getBlogDescription(blog)}
+        image={imageSrc}
+        imageAlt={blog.title}
+        href={`/blog/${blog.slug}`}
+        onImageError={() => {
+          if (imageSrc !== fallbackImage) {
+            setImageSrc(fallbackImage);
+          }
+        }}
+        footerContent={
+          <span
+            className="blogpage-engagement blog-design-footer-extra"
+            aria-label="Blog engagement"
+          >
             <button
               type="button"
               className={`blogpage-engagement-item ${liked ? 'liked' : ''}`}
@@ -187,9 +169,9 @@ function AnimatedBlogCard({ blog, index, variant = 'animate-fade-in' }: Animated
               <span>{commentsCount}</span>
             </span>
           </span>
-        </div>
-      </div>
-    </article>
+        }
+      />
+    </div>
   );
 }
 
@@ -290,10 +272,10 @@ export default function BlogPage() {
 
   return (
     <>
-      <section className="blog-hero">
+      <section className="blog-hero blog-listing-hero">
         <div className="blog-hero-media" ref={heroMediaRef}>
           <Image
-            src="/assets/blogs/blog-1.webp"
+            src="/assets/blogs/new-banner.jpeg"
             alt="Read Blog"
             fill
             priority
@@ -301,10 +283,8 @@ export default function BlogPage() {
           />
         </div>
 
-        <div className="blog-hero-overlay"></div>
-
         <div className="blog-hero-content" ref={heroContentRef}>
-          <h1>Explore Insights</h1>
+          {/* <h1>Explore Insights</h1> */}
 
           <div className="blog-breadcrumb">
             <Link href="/" className="blog-breadcrumb-home">
@@ -356,7 +336,7 @@ export default function BlogPage() {
             <p style={{ marginBottom: '16px', opacity: 0.75 }}>{statusMessage}</p>
           ) : null}
 
-          <div className="blogpage-grid">
+          <div className="blog-design-grid">
             {!isLoading && !error && filteredCards.length === 0 ? (
               <div className="blogpage-card" style={{ gridColumn: '1 / -1', textAlign: 'center' }}>
                 <p>No blogs found.</p>

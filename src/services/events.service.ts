@@ -350,6 +350,24 @@ export type WebsiteEvent = {
   [key: string]: unknown;
 };
 
+export function getWebsiteEventImage(event: WebsiteEvent): string {
+  const image = [
+    event.bannerImage?.medium,
+    event.bannerImage?.small,
+    event.bannerImage?.large,
+    event.bannerImage?.original,
+    event.bannerImageId?.urlVariants?.medium,
+    event.bannerImageId?.urlVariants?.small,
+    event.bannerImageId?.urlVariants?.large,
+    event.bannerImageId?.url,
+    event.image,
+    event.heroImage,
+    event.banner,
+  ].find((candidate) => typeof candidate === 'string' && candidate.trim());
+
+  return image ?? '/assets/blogs/blog-1.webp';
+}
+
 type RawEvent = Record<string, unknown>;
 
 function isRecord(value: unknown): value is Record<string, unknown> {

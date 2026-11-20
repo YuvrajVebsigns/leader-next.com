@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowUpRight } from 'lucide-react';
+import { FaLinkedinIn } from 'react-icons/fa';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 
 export default function FoundersMessage() {
@@ -73,7 +74,18 @@ export default function FoundersMessage() {
 
           <div className="founder-author">
             <div>
-              <h3>Anoop Mathur</h3>
+              <div className="founder-name-line">
+                <h3>Anoop Mathur</h3>
+                <a
+                  href="https://www.linkedin.com/in/mathuranoop/"
+                  className="founder-linkedin"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Anoop Mathur on LinkedIn"
+                >
+                  <FaLinkedinIn size={15} />
+                </a>
+              </div>
               <span>Founder, CORE MEDIA</span>
             </div>
 

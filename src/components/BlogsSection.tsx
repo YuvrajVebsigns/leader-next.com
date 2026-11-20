@@ -5,19 +5,13 @@ import Link from 'next/link';
 import { ArrowUpRight, Heart, MessageCircle } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
+import BlogCard from '@/components/BlogCard';
 import {
+  getWebsiteBlogImage,
   fetchWebsiteBlogs,
   submitWebsiteBlogLike,
   type WebsiteBlogItem,
 } from '@/services/blogs.service';
-
-function getBlogCategory(blog: WebsiteBlogItem) {
-  return blog.websites?.[0]?.name || blog.tags?.[0] || 'Blog';
-}
-
-function getBlogImage(blog: WebsiteBlogItem) {
-  return blog.featureImage || blog.seo?.ogImage || '/assets/blogs/blog-1.png';
-}
 
 export default function BlogsSection() {
   const [blogs, setBlogs] = useState<WebsiteBlogItem[]>([]);
@@ -207,7 +201,7 @@ export default function BlogsSection() {
           </h2> */}
         </div>
 
-        <div className="blogs-grid">
+        <div className="blog-design-grid">
           {!isLoading && blogs.length === 0 ? (
             <div className="blog-card" style={{ gridColumn: '1 / -1', textAlign: 'center' }}>
               <p>No blogs found right now.</p>
@@ -218,64 +212,23 @@ export default function BlogsSection() {
             const liked = likedBlogs.has(String(blog.id));
 
             return (
-              // <div className="blog-card" key={String(blog.id)} ref={blogRefs[index]}>
-              //   <div className="blog-image-wrapper">
-              //     <Image
-              //       src={getBlogImage(blog)}
-              //       alt={blog.title}
-              //       width={420}
-              //       height={320}
-              //       className="blog-image"
-              //       unoptimized
-              //     />
-              //   </div>
-
-              //   <div className="blog-content">
-              //     <div className="blog-meta">
-              //       <span className="blog-category">{getBlogCategory(blog)}</span>
-              //     </div>
-
-              //     <h4 className="blog-heading blog-heading-fixed">{blog.title}</h4>
-
-              <div className="blog-card" key={String(blog.id)} ref={blogRefs[index]}>
-                <Link
+              <div className="blog-design-item" key={String(blog.id)} ref={blogRefs[index]}>
+                <BlogCard
+                  title={blog.title}
+                  excerpt={blog.excerpt}
+                  image={getWebsiteBlogImage(blog)}
+                  imageAlt={blog.title}
                   href={`/blog/${blog.slug}`}
-                  className="blog-image-link"
-                  aria-label={`Read ${blog.title}`}
-                >
-                  <div className="blog-image-wrapper">
-                    <Image
-                      src={getBlogImage(blog)}
-                      alt={blog.title}
-                      width={420}
-                      height={320}
-                      className="blog-image"
-                      unoptimized
-                    />
-                  </div>
-                </Link>
-
-                <div className="blog-content">
-                  <div className="blog-meta">
-                    <span className="blog-category">{getBlogCategory(blog)}</span>
-                  </div>
-
-                  <h4 className="blog-heading blog-heading-fixed">{blog.title}</h4>
-
-                  <div className="blogpage-footer">
-                    <Link href={`/blog/${blog.slug}`} className="blog-readmore">
-                      <span className="blog-readmore-text">Read More</span>
-                      <span className="blog-arrow" aria-hidden="true">
-                        <ArrowUpRight size={16} />
-                      </span>
-                    </Link>
-
-                    <span className="blogpage-engagement" aria-label="Blog engagement">
+                  footerContent={
+                    <span
+                      className="blogpage-engagement blog-design-footer-extra"
+                      aria-label="Blog engagement"
+                    >
                       <button
                         type="button"
                         className={`blogpage-engagement-item ${liked ? 'liked' : ''}`}
                         aria-label={`${getLikesCount(blog)} likes`}
-                        onClick={(e) => handleLikeClick(e, blog.id)}
+                        onClick={(event) => handleLikeClick(event, blog.id)}
                         style={liked ? { color: '#8e0101' } : undefined}
                       >
                         <Heart size={14} fill={liked ? '#8e0101' : 'none'} />
@@ -290,8 +243,8 @@ export default function BlogsSection() {
                         <span>{getCommentsCount(blog)}</span>
                       </span>
                     </span>
-                  </div>
-                </div>
+                  }
+                />
               </div>
             );
           })}

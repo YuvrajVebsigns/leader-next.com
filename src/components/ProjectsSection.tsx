@@ -1,11 +1,15 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowUpRight } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
-import { fetchWebsiteEvents, WebsiteEvent } from '@/services/events.service';
+import EventCard from '@/components/EventCard';
+import {
+  fetchWebsiteEvents,
+  getWebsiteEventImage,
+  type WebsiteEvent,
+} from '@/services/events.service';
 
 function getStoredWebsiteId(): string | undefined {
   if (typeof window === 'undefined') return undefined;
@@ -97,7 +101,7 @@ export default function ProjectsSection() {
           </Link>
         </div>
 
-        <div className="project-grid">
+        <div className="event-grid">
           {events === null ? (
             <div className="events-loading">Loading events…</div>
           ) : events.length === 0 ? (
@@ -119,27 +123,18 @@ export default function ProjectsSection() {
                       .replace(/\s+/g, '-')
                       .replace(/[^a-z0-9-]/g, '');
 
-              const imageSrc = String(
-                item.image ?? item.heroImage ?? item.banner ?? '/assets/blogs/blog-1.webp',
-              );
-              const category = String(item.category ?? 'Events');
+              const imageSrc = getWebsiteEventImage(item);
+              const category = String(item.type || item.category || 'Events');
 
               return (
-                <Link key={slug} href={`/events/${slug}`}>
-                  <div className="project-card" ref={index === 0 ? customLeftRef : customRightRef}>
-                    <div className="project-image-wrap">
-                      <Image src={imageSrc} alt={title} fill className="project-image" />
-                    </div>
-
-                    <div className="project-overlay">
-                      <span className="project-category">{category}</span>
-
-                      <div className="project-content">
-                        <h3>{title}</h3>
-                      </div>
-                    </div>
-                  </div>
-                </Link>
+                <div key={slug} ref={index === 0 ? customLeftRef : customRightRef}>
+                  <EventCard
+                    title={title}
+                    category={category}
+                    image={imageSrc}
+                    href={`/events/${slug}`}
+                  />
+                </div>
               );
             })
           )}

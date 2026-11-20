@@ -9,9 +9,25 @@ export interface WebsiteBlogWebsite {
 }
 
 export interface WebsiteBlogAuthor {
-  email: string;
-  fullName: string;
+  email?: string;
+  fullName?: string;
   id: string;
+  name?: string;
+}
+
+export interface WebsiteBlogImage {
+  original?: string;
+  thumbnail?: string;
+  small?: string;
+  medium?: string;
+  large?: string;
+  url?: string;
+  urlVariants?: {
+    thumbnail?: string;
+    small?: string;
+    medium?: string;
+    large?: string;
+  };
 }
 
 export interface WebsiteBlogItem {
@@ -19,8 +35,8 @@ export interface WebsiteBlogItem {
   slug: string;
   title: string;
   excerpt?: string;
-  featureImage?: string;
-  featureImageId?: string | null;
+  featureImage?: string | WebsiteBlogImage | null;
+  featureImageId?: string | WebsiteBlogImage | null;
   websites?: WebsiteBlogWebsite[];
   author?: WebsiteBlogAuthor;
   isActive?: boolean;
@@ -39,6 +55,40 @@ export interface WebsiteBlogItem {
     views?: number;
     commentsCount?: number;
   };
+}
+
+function getImageUrl(image: string | WebsiteBlogImage | null | undefined): string | undefined {
+  if (typeof image === 'string') {
+    return image.trim() || undefined;
+  }
+
+  if (!image) {
+    return undefined;
+  }
+
+  const candidates = [
+    image.medium,
+    image.small,
+    image.large,
+    image.thumbnail,
+    image.original,
+    image.url,
+    image.urlVariants?.medium,
+    image.urlVariants?.small,
+    image.urlVariants?.large,
+    image.urlVariants?.thumbnail,
+  ];
+
+  return candidates.find((candidate) => typeof candidate === 'string' && candidate.trim());
+}
+
+export function getWebsiteBlogImage(blog: WebsiteBlogItem): string {
+  return (
+    getImageUrl(blog.featureImage) ??
+    getImageUrl(blog.featureImageId) ??
+    getImageUrl(blog.seo?.ogImage) ??
+    '/assets/blogs/blog-1.png'
+  );
 }
 
 export interface WebsiteBlogsResponse {

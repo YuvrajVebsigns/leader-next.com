@@ -71,6 +71,10 @@ export default function Footer() {
 
       <div className="footer-main">
         <div className="footer-container">
+          <nav className="footer-registration-nav" aria-label="Footer quick links">
+            <Link href="/register">Registration</Link>
+          </nav>
+
           <div className="footer-grid">
             {/* =========================================
                 COLUMN 1 - BRAND
@@ -102,26 +106,24 @@ export default function Footer() {
 
               <ul className="footer-links">
                 <li>
-                  <Link href="/register">Registration</Link>
+                  <Link href="/aboutus">About Us</Link>
                 </li>
 
-                {/* <li>
+                <li>
                   <Link href="/process">Process</Link>
-                </li> */}
+                </li>
 
                 <li>
                   <Link href="/partners/partner-2025">Partners</Link>
                 </li>
 
+                <li>
+                  <Link href="/nominate">Nomination</Link>
+                </li>
+
                 {/* <li>
                   <Link href="/contact">Contact</Link>
                 </li> */}
-
-                {/*
-                <li>
-                  <Link href="/nominate">Nominate</Link>
-                </li>
-                */}
               </ul>
             </div>
 

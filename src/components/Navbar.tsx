@@ -37,21 +37,38 @@ export default function Navbar() {
   const [isHidden, setIsHidden] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [aboutOpen, setAboutOpen] = useState(false);
   const [winnersOpen, setWinnersOpen] = useState(false);
   const [speakersOpen, setSpeakersOpen] = useState(false);
   const [partnersOpen, setPartnersOpen] = useState(false);
   const [juryOpen, setJuryOpen] = useState(false);
   const [activeHash, setActiveHash] = useState('');
 
+  const aboutCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const winnersCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const speakersCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const partnersCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const juryCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const isWinnerPage = pathname.startsWith('/winners');
+  const isAboutPage = pathname.startsWith('/aboutus');
   const isSpeakerPage = pathname.startsWith('/speakers');
   const isPartnerPage = pathname.startsWith('/partners');
   const isJuryPage = pathname.startsWith('/jury');
+
+  const openAbout = () => {
+    if (aboutCloseTimer.current) clearTimeout(aboutCloseTimer.current);
+    aboutCloseTimer.current = null;
+    setAboutOpen(true);
+  };
+
+  const closeAbout = () => {
+    if (aboutCloseTimer.current) clearTimeout(aboutCloseTimer.current);
+    aboutCloseTimer.current = setTimeout(() => {
+      setAboutOpen(false);
+      aboutCloseTimer.current = null;
+    }, 140);
+  };
 
   const openWinners = () => {
     if (winnersCloseTimer.current) clearTimeout(winnersCloseTimer.current);
@@ -111,6 +128,7 @@ export default function Navbar() {
 
   const closeAllMenus = () => {
     setMobileOpen(false);
+    setAboutOpen(false);
     setWinnersOpen(false);
     setSpeakersOpen(false);
     setPartnersOpen(false);
@@ -141,6 +159,7 @@ export default function Navbar() {
     return () => {
       window.removeEventListener('scroll', handleScroll);
 
+      if (aboutCloseTimer.current) clearTimeout(aboutCloseTimer.current);
       if (winnersCloseTimer.current) clearTimeout(winnersCloseTimer.current);
       if (speakersCloseTimer.current) clearTimeout(speakersCloseTimer.current);
       if (partnersCloseTimer.current) clearTimeout(partnersCloseTimer.current);
@@ -185,21 +204,56 @@ export default function Navbar() {
               ABOUT US
           ================================================= */}
 
-          <Link
-            href="/aboutus"
-            className={`nav-link ${pathname?.startsWith('/aboutus') ? 'active' : ''}`}
-            onClick={closeAllMenus}
+          <div
+            className={`nav-dropdown ${aboutOpen ? 'open' : ''}`}
+            onMouseEnter={openAbout}
+            onMouseLeave={closeAbout}
           >
-            About Us
-          </Link>
+            <button
+              type="button"
+              className={`nav-link ${isAboutPage ? 'active' : ''}`}
+              aria-expanded={aboutOpen}
+              onClick={() => setAboutOpen((open) => !open)}
+            >
+              About Us
+              <ChevronDown size={16} />
+            </button>
 
-          {/*<Link
+            {aboutOpen && (
+              <div
+                className="mega-panel about-dropdown-panel"
+                onMouseEnter={openAbout}
+                onMouseLeave={closeAbout}
+              >
+                <div className="mega-inner">
+                  <div className="mega-column">
+                    <ul>
+                      <li>
+                        <a
+                          href="https://core-mediagroup.com"
+                          className="mega-item"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={closeAllMenus}
+                        >
+                          <span className="mega-icon" aria-hidden />
+                          <span>CORE Media Group</span>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* <Link
             href="/register"
             className={`nav-link ${pathname === '/register' ? 'active' : ''}`}
             onClick={closeAllMenus}
           >
             Registration
-          </Link>*/}
+          </Link> */}
 
           <Link
             href="/process"
@@ -320,43 +374,6 @@ export default function Navbar() {
             )}
           </div>
           <div
-            className={`nav-dropdown ${juryOpen ? 'open' : ''}`}
-            onMouseEnter={openJury}
-            onMouseLeave={closeJury}
-          >
-            <button
-              type="button"
-              className={`nav-link ${isJuryPage ? 'active' : ''}`}
-              aria-expanded={juryOpen}
-              onClick={() => setJuryOpen((open) => !open)}
-            >
-              Jury <ChevronDown size={16} />
-            </button>
-
-            {juryOpen && (
-              <div className="mega-panel" onMouseEnter={openJury} onMouseLeave={closeJury}>
-                <div className="mega-inner">
-                  <div className="mega-column">
-                    <ul>
-                      {juryLinks.map((juryItem) => (
-                        <li key={juryItem.href}>
-                          <Link
-                            href={juryItem.href}
-                            className={`mega-item ${pathname === juryItem.href ? 'active' : ''}`}
-                            onClick={closeAllMenus}
-                          >
-                            <span className="mega-icon" aria-hidden />
-                            <span>{juryItem.label}</span>
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-          <div
             className={`nav-dropdown ${speakersOpen ? 'open' : ''}`}
             onMouseEnter={openSpeakers}
             onMouseLeave={closeSpeakers}
@@ -411,7 +428,43 @@ export default function Navbar() {
               </div>
             )}
           </div>
+          <div
+            className={`nav-dropdown ${juryOpen ? 'open' : ''}`}
+            onMouseEnter={openJury}
+            onMouseLeave={closeJury}
+          >
+            <button
+              type="button"
+              className={`nav-link ${isJuryPage ? 'active' : ''}`}
+              aria-expanded={juryOpen}
+              onClick={() => setJuryOpen((open) => !open)}
+            >
+              Jury <ChevronDown size={16} />
+            </button>
 
+            {juryOpen && (
+              <div className="mega-panel" onMouseEnter={openJury} onMouseLeave={closeJury}>
+                <div className="mega-inner">
+                  <div className="mega-column">
+                    <ul>
+                      {juryLinks.map((juryItem) => (
+                        <li key={juryItem.href}>
+                          <Link
+                            href={juryItem.href}
+                            className={`mega-item ${pathname === juryItem.href ? 'active' : ''}`}
+                            onClick={closeAllMenus}
+                          >
+                            <span className="mega-icon" aria-hidden />
+                            <span>{juryItem.label}</span>
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
           <Link
             href="/nominate"
             className={`nav-link ${pathname === '/nominate' ? 'active' : ''}`}

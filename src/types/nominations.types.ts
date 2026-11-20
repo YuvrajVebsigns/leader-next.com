@@ -36,3 +36,12 @@ export type NominationResponse = {
   message?: string;
   data?: unknown;
 };
+
+export type NominationStatusResponse = {
+  success?: boolean;
+  message?: string;
+  data?: {
+    isActive?: boolean;
+    nominationActive?: boolean;
+  };
+};

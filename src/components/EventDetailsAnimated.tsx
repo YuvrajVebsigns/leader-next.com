@@ -23,6 +23,30 @@ type FeaturedEvent = {
   quoteAuthor?: string;
 };
 
+function formatEventDate(value: string) {
+  if (!value) return 'Date to be announced';
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return value;
+  }
+
+  const hasTime = /(?:T|\s)\d{2}:\d{2}/.test(value);
+
+  return new Intl.DateTimeFormat('en-US', {
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+    ...(hasTime
+      ? {
+          hour: 'numeric',
+          minute: '2-digit',
+        }
+      : {}),
+  }).format(date);
+}
+
 function AnimatedEventSection({ section }: { section: Section }) {
   const sectionRef = useScrollAnimation<HTMLDivElement>();
 
@@ -64,6 +88,7 @@ export default function EventDetailsAnimated({
             fill
             priority
             className="event-details-image"
+            unoptimized={featuredEvent.heroImage.startsWith('http')}
           />
         </div>
 
@@ -87,7 +112,9 @@ export default function EventDetailsAnimated({
         </div>
         <div className="event-details-meta-card">
           <span className="event-details-meta-label">Date Released</span>
-          <strong>{featuredEvent.date}</strong>
+          <strong>
+            <time dateTime={featuredEvent.date}>{formatEventDate(featuredEvent.date)}</time>
+          </strong>
         </div>
       </div>
 

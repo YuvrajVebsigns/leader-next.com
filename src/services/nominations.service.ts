@@ -7,10 +7,44 @@ import {
 } from '@/lib/website-auth';
 import { apiFetch, ApiError } from '@/services/apiFetch';
 import type {
+  NominationStatusResponse,
   NominationResponse,
   NominationSubmissionInput,
   SubmitNominationApiBody,
 } from '@/types/nominations.types';
+
+async function getNominationStatusResponse(): Promise<NominationStatusResponse> {
+  const auth = await ensureWebsiteAuth();
+
+  return apiFetch<NominationStatusResponse>(API_ENDPOINTS.WEBSITE.NOMINATION_STATUS, {
+    method: 'GET',
+    requireAuth: false,
+    headers: {
+      ...buildWebsiteAuthHeaders(auth),
+      'x-website-domain': auth.domain,
+    },
+  });
+}
+
+function isNominationActive(response: NominationStatusResponse): boolean {
+  return (
+    response.success === true &&
+    (response.data?.nominationActive ?? response.data?.isActive) === true
+  );
+}
+
+export async function fetchWebsiteNominationStatus(): Promise<boolean> {
+  try {
+    return isNominationActive(await getNominationStatusResponse());
+  } catch (error: unknown) {
+    if (getApiErrorStatus(error) !== 401) {
+      throw error;
+    }
+
+    clearWebsiteAuth();
+    return isNominationActive(await getNominationStatusResponse());
+  }
+}
 
 function buildSubmitNominationBody(input: NominationSubmissionInput): SubmitNominationApiBody {
   const body: SubmitNominationApiBody = {

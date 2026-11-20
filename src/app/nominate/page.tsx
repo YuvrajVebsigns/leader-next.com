@@ -510,10 +510,13 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { MONGODB_ID_REGEX, NOMINATION_CATEGORY_OPTIONS } from '@/constants/nominations.constants';
-import { submitWebsiteNomination } from '@/services/nominations.service';
+import {
+  fetchWebsiteNominationStatus,
+  submitWebsiteNomination,
+} from '@/services/nominations.service';
 
 type CIOEntry = {
   categoryId: string;
@@ -555,11 +558,45 @@ export default function NominatePage() {
   const [status, setStatus] = useState<string | null>(null);
   const [errors, setErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [nominationAvailability, setNominationAvailability] = useState<
+    'checking' | 'open' | 'closed' | 'error'
+  >('checking');
+  const [nominationStatusError, setNominationStatusError] = useState<string | null>(null);
+  const [statusCheckAttempt, setStatusCheckAttempt] = useState(0);
 
   const [animatingCioIndex, setAnimatingCioIndex] = useState<number | null>(null);
   const [animationType, setAnimationType] = useState<'add' | 'remove' | null>(null);
 
   const maxCios = 10;
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function checkNominationAvailability() {
+      setNominationAvailability('checking');
+      setNominationStatusError(null);
+
+      try {
+        const isActive = await fetchWebsiteNominationStatus();
+        if (isMounted) {
+          setNominationAvailability(isActive ? 'open' : 'closed');
+        }
+      } catch (error: unknown) {
+        if (!isMounted) return;
+
+        setNominationStatusError(
+          error instanceof Error ? error.message : 'Unable to check nomination status.',
+        );
+        setNominationAvailability('error');
+      }
+    }
+
+    checkNominationAvailability();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [statusCheckAttempt]);
 
   const addCio = () => {
     if (cios.length >= maxCios) return;
@@ -618,6 +655,7 @@ export default function NominatePage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (nominationAvailability !== 'open') return;
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const phoneRegex = /^[0-9]{10}$/;
@@ -716,6 +754,12 @@ export default function NominatePage() {
     setIsSubmitting(true);
 
     try {
+      const isStillActive = await fetchWebsiteNominationStatus();
+      if (!isStillActive) {
+        setNominationAvailability('closed');
+        return;
+      }
+
       const response = await submitWebsiteNomination({
         nominatorName,
         nominatorCompany,
@@ -750,6 +794,49 @@ export default function NominatePage() {
       setIsSubmitting(false);
     }
   };
+
+  if (nominationAvailability === 'checking') {
+    return (
+      <main className="nominate-page-container" aria-busy="true">
+        <div className="nomination-status-loader" role="status">
+          <span className="nomination-status-spinner" aria-hidden="true" />
+          {/* <span>Checking nomination availability...</span> */}
+        </div>
+      </main>
+    );
+  }
+
+  if (nominationAvailability === 'closed') {
+    return (
+      <main className="nominate-page-container">
+        <section className="nominate-success-section">
+          <h1>Nominations are closed</h1>
+          <p>We are not accepting nominations at this time.</p>
+          <p>
+            <Link href="/">Return to home</Link>
+          </p>
+        </section>
+      </main>
+    );
+  }
+
+  if (nominationAvailability === 'error') {
+    return (
+      <main className="nominate-page-container">
+        <section className="nominate-success-section" role="alert">
+          <h1>Unable to check nomination status</h1>
+          <p>{nominationStatusError}</p>
+          <button
+            type="button"
+            className="nominate-btn nominate-btn-primary"
+            onClick={() => setStatusCheckAttempt((attempt) => attempt + 1)}
+          >
+            Try again
+          </button>
+        </section>
+      </main>
+    );
+  }
 
   if (submitted) {
     return (

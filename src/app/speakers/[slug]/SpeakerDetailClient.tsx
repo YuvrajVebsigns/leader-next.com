@@ -1,6 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { FaLinkedinIn } from 'react-icons/fa';
+import { getLinkedInProfileUrl, removeLinkedInUrls } from '@/lib/social-links';
 import { fetchWebsitePageBySlug, WebsitePage } from '@/services/pages.service';
 
 type SpeakerDetailClientProps = {
@@ -9,10 +11,96 @@ type SpeakerDetailClientProps = {
 
 const FALLBACK_SPEAKER_IMAGE = '/assets/logo/leader-next-logo.png';
 
+type SpeakerSection = {
+  title: string;
+  speakers: unknown[];
+  isPartner: boolean;
+};
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null;
+}
+
+function getErrorStatus(error: unknown): number | undefined {
+  if (!isRecord(error) || !('statusCode' in error)) return undefined;
+  const statusCode = error.statusCode;
+  return typeof statusCode === 'number' ? statusCode : Number(statusCode);
+}
+
+function getErrorMessage(error: unknown, fallback: string): string {
+  return error instanceof Error ? error.message : fallback;
+}
+
+function getPageSections(page: WebsitePage): unknown[] {
+  if (Array.isArray(page.sections)) return page.sections;
+  if (Array.isArray(page.content?.blocks)) return page.content.blocks;
+  return [];
+}
+
+function getSectionItems(section: unknown): unknown[] {
+  if (Array.isArray(section)) return section;
+  if (!isRecord(section)) return [];
+
+  const data = isRecord(section.data) ? section.data : undefined;
+  const candidates = [
+    data?.testimonials,
+    data?.items,
+    data?.members,
+    data?.speakers,
+    data?.winners,
+    data?.rows,
+    data?.blocks,
+    data?.values,
+    section.testimonials,
+    section.items,
+    section.members,
+    section.speakers,
+    section.winners,
+    section.rows,
+    section.blocks,
+    section.values,
+  ];
+
+  return candidates.find(Array.isArray) ?? [];
+}
+
+function getSpeakerSections(page: WebsitePage, isPartner: boolean): SpeakerSection[] {
+  return getPageSections(page)
+    .map((section) => {
+      if (Array.isArray(section)) {
+        return {
+          title: isPartner ? 'PARTNER SPEAKER' : page.title || 'Speakers',
+          speakers: section,
+          isPartner,
+        };
+      }
+
+      if (!isRecord(section)) return null;
+
+      const sectionData = isRecord(section.data) ? section.data : undefined;
+
+      return {
+        title:
+          (typeof sectionData?.sectionTitle === 'string' && sectionData.sectionTitle) ||
+          (typeof sectionData?.title === 'string' && sectionData.title) ||
+          (typeof section.title === 'string' && section.title) ||
+          (typeof section.type === 'string' && section.type) ||
+          (isPartner ? 'PARTNER SPEAKER' : page.title || 'Speakers'),
+        speakers: getSectionItems(section),
+        isPartner,
+      };
+    })
+    .filter(
+      (section): section is SpeakerSection => section !== null && section.speakers.length > 0,
+    );
+}
+
 export default function SpeakerDetailClient({ slug }: SpeakerDetailClientProps) {
   const [page, setPage] = useState<WebsitePage | null>(null);
+  const [partnerPage, setPartnerPage] = useState<WebsitePage | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [partnerError, setPartnerError] = useState<string | null>(null);
 
   useEffect(() => {
     let isMounted = true;
@@ -20,6 +108,8 @@ export default function SpeakerDetailClient({ slug }: SpeakerDetailClientProps) 
     async function loadPage() {
       setIsLoading(true);
       setError(null);
+      setPartnerError(null);
+      setPartnerPage(null);
 
       try {
         const response = await fetchWebsitePageBySlug(slug);
@@ -28,18 +118,34 @@ export default function SpeakerDetailClient({ slug }: SpeakerDetailClientProps) 
 
         if (response?.success && response.data) {
           setPage(response.data);
+        } else {
+          setError(response?.message ?? 'Unable to load speaker page.');
           return;
         }
-
-        setError(response?.message ?? 'Unable to load speaker page.');
       } catch (err: unknown) {
         setError(
           err instanceof Error ? err.message : 'Unable to load speaker page. Please try again.',
         );
+        return;
       } finally {
-        if (isMounted) {
-          setIsLoading(false);
+        if (isMounted) setIsLoading(false);
+      }
+
+      const year = /^speaker-(\d{4})$/.exec(slug)?.[1];
+      if (!year) return;
+
+      try {
+        const partnerResponse = await fetchWebsitePageBySlug(`partner-speaker-${year}`);
+        if (!isMounted) return;
+
+        if (partnerResponse?.success && partnerResponse.data) {
+          setPartnerPage(partnerResponse.data);
         }
+      } catch (err: unknown) {
+        if (!isMounted) return;
+        if (getErrorStatus(err) === 404) return;
+
+        setPartnerError(getErrorMessage(err, 'Unable to load partner speakers. Please try again.'));
       }
     }
 
@@ -95,98 +201,10 @@ export default function SpeakerDetailClient({ slug }: SpeakerDetailClientProps) 
     );
   }
 
-  /* =========================================
-     GET PAGE SECTIONS
-  ========================================= */
-
-  const pageSections: unknown[] = Array.isArray(page.sections)
-    ? page.sections
-    : Array.isArray(page.content?.blocks)
-      ? page.content.blocks
-      : [];
-
-  /* =========================================
-     GET ITEMS FROM SECTION
-  ========================================= */
-
-  const getSectionItems = (section: unknown): unknown[] => {
-    if (Array.isArray(section)) {
-      return section;
-    }
-
-    const sectionRecord = section as Record<string, unknown>;
-
-    const data =
-      sectionRecord.data && typeof sectionRecord.data === 'object'
-        ? (sectionRecord.data as Record<string, unknown>)
-        : undefined;
-
-    const candidates: unknown[] = [];
-
-    if (data) {
-      candidates.push(
-        data.testimonials,
-        data.items,
-        data.members,
-        data.speakers,
-        data.winners,
-        data.rows,
-        data.blocks,
-        data.values,
-      );
-    }
-
-    candidates.push(
-      sectionRecord.testimonials,
-      sectionRecord.items,
-      sectionRecord.members,
-      sectionRecord.speakers,
-      sectionRecord.winners,
-      sectionRecord.rows,
-      sectionRecord.blocks,
-      sectionRecord.values,
-    );
-
-    for (const candidate of candidates) {
-      if (Array.isArray(candidate)) {
-        return candidate;
-      }
-    }
-
-    return [];
-  };
-
-  /* =========================================
-     BUILD SPEAKER SECTIONS
-  ========================================= */
-
-  const speakerSections = pageSections
-    .map((section) => {
-      const sectionRecord = section as Record<string, unknown>;
-
-      const sectionData =
-        sectionRecord.data && typeof sectionRecord.data === 'object'
-          ? (sectionRecord.data as Record<string, unknown>)
-          : undefined;
-
-      const speakers = getSectionItems(section);
-
-      return {
-        title:
-          typeof sectionData?.sectionTitle === 'string'
-            ? sectionData.sectionTitle
-            : typeof sectionData?.title === 'string'
-              ? sectionData.title
-              : typeof sectionRecord.title === 'string'
-                ? sectionRecord.title
-                : typeof sectionRecord.type === 'string'
-                  ? sectionRecord.type
-                  : (page.title ?? 'Speakers'),
-
-        speakers,
-      };
-    })
-    .filter((section) => section.speakers.length > 0);
+  const speakerSections = [
+    ...getSpeakerSections(page, false),
+    ...(partnerPage ? getSpeakerSections(partnerPage, true) : []),
+  ];
 
   /* =========================================
      RENDER
@@ -218,9 +236,7 @@ export default function SpeakerDetailClient({ slug }: SpeakerDetailClientProps) 
             {/* SECTION HEADER */}
 
             <div className="winner-section-header winner-section-header--centered">
-              <p className="winner-section-kicker">{section.title || 'Speaker Profiles'}</p>
-
-              <h2>{section.title || 'Speaker Profiles'}</h2>
+              <h2>{section.isPartner ? 'PARTNER SPEAKER' : 'SPEAKERS'}</h2>
 
               <span>{section.speakers.length} members</span>
             </div>
@@ -241,11 +257,14 @@ export default function SpeakerDetailClient({ slug }: SpeakerDetailClientProps) 
                     ? entry.avatar.trim()
                     : FALLBACK_SPEAKER_IMAGE;
 
-                const speakerRole =
+                const rawSpeakerRole =
                   typeof entry.role === 'string' && entry.role.trim() ? entry.role.trim() : '';
 
-                const speakerQuote =
+                const rawSpeakerQuote =
                   typeof entry.quote === 'string' && entry.quote.trim() ? entry.quote.trim() : '';
+                const linkedInUrl = getLinkedInProfileUrl(entry, [rawSpeakerRole, rawSpeakerQuote]);
+                const speakerRole = removeLinkedInUrls(rawSpeakerRole);
+                const speakerQuote = removeLinkedInUrls(rawSpeakerQuote);
 
                 return (
                   <article
@@ -280,7 +299,7 @@ export default function SpeakerDetailClient({ slug }: SpeakerDetailClientProps) 
                           SPEAKER INFORMATION
                       ================================= */}
 
-                    <div className="winner-profile-body">
+                    <div className="winner-profile-body speaker-profile-body">
                       <h3>{speakerName}</h3>
 
                       <p className="winner-profile-category">
@@ -289,6 +308,18 @@ export default function SpeakerDetailClient({ slug }: SpeakerDetailClientProps) 
 
                       {speakerQuote ? (
                         <p className="winner-profile-company">&quot;{speakerQuote}&quot;</p>
+                      ) : null}
+
+                      {linkedInUrl ? (
+                        <a
+                          href={linkedInUrl}
+                          className="profile-linkedin"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label={`Open ${speakerName}'s LinkedIn profile`}
+                        >
+                          <FaLinkedinIn aria-hidden="true" size={16} />
+                        </a>
                       ) : null}
                     </div>
                   </article>
@@ -306,6 +337,12 @@ export default function SpeakerDetailClient({ slug }: SpeakerDetailClientProps) 
           <p>No speaker cards were found for this page.</p>
         </section>
       )}
+
+      {partnerError ? (
+        <section className="winner-section-block">
+          <p>Unable to load partner speakers: {partnerError}</p>
+        </section>
+      ) : null}
     </main>
   );
 }

@@ -222,6 +222,7 @@ export default function WinnerDetailClient({ slug, kicker }: WinnerDetailClientP
         data.items,
         data.members,
         data.winners,
+        data.entries,
         data.rows,
         data.blocks,
         data.values,
@@ -233,6 +234,7 @@ export default function WinnerDetailClient({ slug, kicker }: WinnerDetailClientP
       sectionRecord.items,
       sectionRecord.members,
       sectionRecord.winners,
+      sectionRecord.entries,
       sectionRecord.rows,
       sectionRecord.blocks,
       sectionRecord.values,
@@ -352,8 +354,6 @@ export default function WinnerDetailClient({ slug, kicker }: WinnerDetailClientP
       {technologyIcons.length > 0 ? (
         <section className="winner-section-block">
           <div className="winner-section-header winner-section-header--centered">
-            <p className="winner-section-kicker">Winner Profiles</p>
-
             <h2>TECHNOLOGY ICONS</h2>
 
             <span>{technologyIcons.length} Members</span>
@@ -378,8 +378,6 @@ export default function WinnerDetailClient({ slug, kicker }: WinnerDetailClientP
         testimonialSections.map((section, sectionIndex) => (
           <section key={sectionIndex} className="winner-section-block">
             <div className="winner-section-header winner-section-header--centered">
-              <p className="winner-section-kicker">Winner Profiles</p>
-
               <h2>{section.title || 'Winner Profiles'}</h2>
 
               <span>{section.testimonials.length} Members</span>

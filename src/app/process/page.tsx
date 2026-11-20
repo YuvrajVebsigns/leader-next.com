@@ -1,24 +1,24 @@
 'use client';
 
-import { CheckCircle, Users, Award, Search } from 'lucide-react';
+import { CheckCircle, Award, Search } from 'lucide-react';
 
 const processSteps = [
-  'Combining data on achievements till date.',
-  'Analyzing involvement in associations and industry groups.',
-  'Random sampling of social media engagement.',
-  'Inputs from executives on key achievements in the last 12 months.',
-  'Leadership assessment for interpersonal skills and emotional intelligence.',
-  'Juror interviews to prepare the final winners list.',
+  'Combining Data on achievements till date.',
+  'Analyzing involvement in Associations and Industry groups.',
+  'Random sampling of Social Media Engagement.',
+  'Inputs from the executives themselves on the key achievements in the last 12 months.',
+  'Undertaking leadership assessment to analyze interpersonal skills, emotional intelligence, and more.',
+  'Shortlisted senior IT and digital executives will be interviewed by the panel of jurors to prepare a list of winners.',
 ];
 
 const eligibility = [
-  'Resident of India at the time of application.',
-  'Applicants reporting directly to CIO/CDO/ICT Leader/Senior ICT Decision Maker can apply.',
-  'Minimum 10 years of full-time work experience.',
-  'Application only once per applicant is permissible.',
-  'Currently employed within a company or organization.',
+  'A resident of India at the time of application.',
+  'Applicants reporting directly to the CIO/CDO/ICT Leader/Senior Most ICT Decision Maker of the organization can apply.',
+  'A minimum of 10 years of full-time work experience.',
+  'Application only once per applicant permissible.',
+  'Currently employed within a company or organization (self-employment is not eligible).',
   'Valid documentation of current work experience and personal details.',
-  'Required permission from current employer organization.',
+  'Required permissions from current employer organization to be a part of LeaderNext 2026.',
 ];
 
 export default function ProcessPage() {
@@ -28,11 +28,12 @@ export default function ProcessPage() {
         <div className="process-container">
           <span className="process-badge">PROCESS</span>
 
-          <h1>LeaderNext Award Selection Process</h1>
+          {/* <h1>LeaderNext Award Selection Process</h1> */}
 
           <p>
-            LeaderNext is a transformative platform dedicated to honouring the brightest technology
-            minds of India who are poised to take on future CXO roles.
+            LeaderNext is a transformative and influential platform dedicated to honouring the
+            brightest technology minds of our nation who are poised to take on CXOs role in the
+            future.
           </p>
         </div>
       </section>
@@ -43,22 +44,15 @@ export default function ProcessPage() {
             <Award className="process-icon" size={38} />
             <h2>About LeaderNext</h2>
             <p>
-              India’s leading CIOs and business leaders play a key role in selecting the LeaderNext
-              award winners. The jury represents rich leadership experience backed by technical and
-              digital expertise.
+              India’s leading CIOs and Business Leaders play the lead role in the selection of the
+              LeaderNext award winners. The LeaderNext jury members cumulatively represent rich
+              leadership experience backed with technical and digital expertise and are entrusted to
+              define the award selection criteria, interview candidates, and approve the list of
+              winners.
             </p>
             <p>
-              Jury members define the selection criteria, interview candidates, evaluate leadership
-              potential, and approve the final winners.
-            </p>
-          </div>
-
-          <div className="process-card highlight-card">
-            <Users className="process-icon" size={38} />
-            <h2>Evaluation Focus</h2>
-            <p>
-              Candidates are evaluated based on career achievements, professional expertise,
-              leadership capability, and readiness to join the C-Suite.
+              The jury evaluates and appraises candidates based on their career achievements,
+              professional expertise, and leadership potential to join the C-Suite.
             </p>
           </div>
         </div>

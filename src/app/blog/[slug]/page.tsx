@@ -3,11 +3,12 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { ArrowUpLeft, ArrowUpRight } from 'lucide-react';
+import { ArrowUpLeft, ArrowUpRight, MessageCircle, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import useScrollAnimation from '../../../hooks/useScrollAnimation';
 import BlogCommentsPanel from '@/components/BlogCommentsPanel';
 import {
+  getWebsiteBlogImage,
   fetchWebsiteBlogBySlug,
   type WebsiteBlogContentBlock,
   type WebsiteBlogDetailItem,
@@ -44,14 +45,6 @@ function formatPublishedDate(value?: string) {
     day: 'numeric',
     year: 'numeric',
   });
-}
-
-function getBlogImage(blog?: WebsiteBlogDetailItem | null) {
-  return blog?.featureImage || blog?.seo?.ogImage || '/assets/blogs/blog-1.webp';
-}
-
-function getBlogCategory(blog?: WebsiteBlogDetailItem | null) {
-  return blog?.websites?.[0]?.name || blog?.tags?.[0] || 'Blog';
 }
 
 function getBlogContentBlocks(blog?: WebsiteBlogDetailItem | null) {
@@ -161,6 +154,7 @@ export default function BlogDetailsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showShareOptions, setShowShareOptions] = useState(false);
+  const [isCommentsOpen, setIsCommentsOpen] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -235,9 +229,11 @@ export default function BlogDetailsPage() {
   }
 
   const displayTitle = blog.title;
-  const displayCategory = getBlogCategory(blog);
+  const displayExcerpt = blog.excerpt?.trim() || blog.seo?.metaDescription?.trim() || '';
   const displayDate = formatPublishedDate(blog.publishedAt);
-  const displayImage = getBlogImage(blog);
+  const authorName = blog.author?.name ?? blog.author?.fullName;
+  const displayAuthor = typeof authorName === 'string' ? authorName.trim() : '';
+  const displayImage = getWebsiteBlogImage(blog);
   const contentBlocks = getBlogContentBlocks(blog);
   const shareUrl = typeof window !== 'undefined' ? `${window.location.origin}/blog/${slug}` : '';
 
@@ -307,15 +303,18 @@ export default function BlogDetailsPage() {
             animationClass="animate-fade-in-left"
             initialTransform="translateX(-24px)"
           >
-            <div className="blogpage-meta">
-              <span className="blogpage-category">{displayCategory}</span>
-            </div>
-
             <h1 className="blogpage-title">{displayTitle}</h1>
 
-            {displayDate ? (
-              <div className="blogpage-meta" style={{ marginBottom: '18px' }}>
-                Published on {displayDate}
+            {displayExcerpt ? <p className="blogpage-intro">{displayExcerpt}</p> : null}
+
+            {displayDate || displayAuthor ? (
+              <div className="blogpage-published-info">
+                {displayDate ? <p className="blogpage-meta">Published on {displayDate}</p> : null}
+                {displayAuthor ? (
+                  <p className="blogpage-meta">
+                    By <span className="blogpage-author-name">{displayAuthor}</span>
+                  </p>
+                ) : null}
               </div>
             ) : null}
 
@@ -422,18 +421,46 @@ export default function BlogDetailsPage() {
               </AnimatedBlock>
             </div>
           </AnimatedBlock>
+        </div>
+      </article>
 
-          <aside className="blog-comments-side-card">
-            <h3 className="blog-comments-side-card-title">Comments</h3>
+      <div className="blog-comments-widget">
+        <button
+          type="button"
+          className="blog-comments-toggle"
+          onClick={() => setIsCommentsOpen((isOpen) => !isOpen)}
+          aria-label={isCommentsOpen ? 'Close comments' : 'Open comments'}
+          aria-expanded={isCommentsOpen}
+          aria-controls={isCommentsOpen ? 'blog-comments-popover' : undefined}
+        >
+          <MessageCircle size={24} aria-hidden="true" />
+        </button>
+
+        {isCommentsOpen ? (
+          <aside id="blog-comments-popover" className="blog-comments-popover" aria-label="Comments">
+            <header className="blog-comments-popover-header">
+              <div>
+                <h2>Comments</h2>
+                <p>Join the conversation</p>
+              </div>
+              <button
+                type="button"
+                className="blog-comments-popover-close"
+                onClick={() => setIsCommentsOpen(false)}
+                aria-label="Close comments"
+              >
+                <X size={20} aria-hidden="true" />
+              </button>
+            </header>
 
             {blog.id ? (
               <BlogCommentsPanel blogId={String(blog.id)} />
             ) : (
-              <p>No comments available.</p>
+              <p className="blog-comments-panel-status">No comments available.</p>
             )}
           </aside>
-        </div>
-      </article>
+        ) : null}
+      </div>
     </main>
   );
 }
