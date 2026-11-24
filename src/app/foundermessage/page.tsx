@@ -89,9 +89,11 @@ export default function FoundersMessage() {
               <span>Founder, CORE MEDIA</span>
             </div>
 
-            <Link href="/#contact-section" className="founder-btn">
-              Partner With Us
-              <ArrowUpRight size={18} />
+            <Link href="/contact-us" className="founder-btn">
+              <span>Partner With Us</span>
+              <div className="founder-btn-icon">
+                <ArrowUpRight size={22} />
+              </div>
             </Link>
           </div>
         </div>

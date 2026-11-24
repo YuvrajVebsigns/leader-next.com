@@ -474,8 +474,8 @@ export default function Navbar() {
           </Link>
 
           <Link
-            href="/#contact-section"
-            className={`nav-link ${activeHash === '#contact-section' ? 'active' : ''}`}
+            href="/contact-us"
+            className={`nav-link ${pathname === '/contact-us' ? 'active' : ''}`}
             onClick={closeAllMenus}
           >
             Contact
@@ -483,7 +483,7 @@ export default function Navbar() {
         </nav>
 
         <div className="navbar-actions">
-          <Link href="/#contact-section" className="talk-btn" onClick={closeAllMenus}>
+          <Link href="/contact-us" className="talk-btn" onClick={closeAllMenus}>
             <span>Let’s Talk</span>
 
             <div className="talk-btn-icon">

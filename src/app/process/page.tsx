@@ -1,6 +1,7 @@
 'use client';
 
 import { CheckCircle, Award, Search } from 'lucide-react';
+import PageHeroCard from '@/components/PageHeroCard';
 
 const processSteps = [
   'Combining Data on achievements till date.',
@@ -24,19 +25,11 @@ const eligibility = [
 export default function ProcessPage() {
   return (
     <main className="process-page">
-      <section className="process-hero">
-        <div className="process-container">
-          <span className="process-badge">PROCESS</span>
-
-          {/* <h1>LeaderNext Award Selection Process</h1> */}
-
-          <p>
-            LeaderNext is a transformative and influential platform dedicated to honouring the
-            brightest technology minds of our nation who are poised to take on CXOs role in the
-            future.
-          </p>
-        </div>
-      </section>
+      <PageHeroCard
+        kicker="Process"
+        title="LeaderNext Award Selection Process"
+        description="LeaderNext is a transformative and influential platform dedicated to honouring the brightest technology minds of our nation who are poised to take on CXOs role in the future."
+      />
 
       <section className="process-section">
         <div className="process-container process-grid">

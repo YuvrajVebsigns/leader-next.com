@@ -54,22 +54,18 @@
 
 'use client';
 
-import Link from 'next/link';
-import { ArrowUpRight } from 'lucide-react';
+// import Link from 'next/link';
+// import { ArrowUpRight } from 'lucide-react';
+import PageHeroCard from '@/components/PageHeroCard';
 
 export default function Partners2023() {
   return (
     <main className="partners-page">
-      <section className="partners-hero">
-        <div className="partners-container">
-          <span className="partners-badge">PARTNERS 2023</span>
-          <h1>Our Strategic Partners 2023</h1>
-          <p>
-            Celebrating the organizations and collaborators who supported our vision and helped make
-            the 2023 edition impactful.
-          </p>
-        </div>
-      </section>
+      <PageHeroCard
+        kicker="Partners 2023"
+        title="Our Strategic Partners 2023"
+        description="Celebrating the organizations and collaborators who supported our vision and helped make the 2023 edition impactful."
+      />
 
       <section className="partners-section">
         <div className="partners-container">
@@ -111,16 +107,16 @@ export default function Partners2023() {
         </div>
       </section>
 
-      <section className="partners-cta">
+      {/* <section className="partners-cta">
         <div className="partners-container partners-cta-box">
           <h2>Partner With Us</h2>
           <p>Join us in building a stronger leadership and technology ecosystem.</p>
 
-          <Link href="/contact" className="partners-btn">
+          <Link href="/contact-us" className="partners-btn">
             Contact Us <ArrowUpRight size={18} />
           </Link>
         </div>
-      </section>
+      </section> */}
     </main>
   );
 }

@@ -71,9 +71,9 @@ export default function Footer() {
 
       <div className="footer-main">
         <div className="footer-container">
-          <nav className="footer-registration-nav" aria-label="Footer quick links">
+          {/* <nav className="footer-registration-nav" aria-label="Footer quick links">
             <Link href="/register">Registration</Link>
-          </nav>
+          </nav> */}
 
           <div className="footer-grid">
             {/* =========================================
@@ -113,12 +113,18 @@ export default function Footer() {
                   <Link href="/process">Process</Link>
                 </li>
 
-                <li>
+                {/* <li>
                   <Link href="/partners/partner-2025">Partners</Link>
+                </li> */}
+                <li>
+                  <Link href="/process">Process</Link>
+                </li>
+                <li>
+                  <Link href="/nominate">Nomination</Link>
                 </li>
 
                 <li>
-                  <Link href="/nominate">Nomination</Link>
+                  <Link href="/register">Registration</Link>
                 </li>
 
                 {/* <li>
@@ -141,6 +147,15 @@ export default function Footer() {
 
                 <li>
                   <Link href="/events">Event</Link>
+                </li>
+                <li>
+                  <Link href="/partners/partner-2025">Partners</Link>
+                </li>
+                <li>
+                  <Link href="/winners/winner-2026">Winners</Link>
+                </li>
+                <li>
+                  <Link href="/speakers/speaker-2025">Speakers</Link>
                 </li>
               </ul>
             </div>
@@ -294,7 +309,12 @@ export default function Footer() {
               COPYRIGHT
           ========================================= */}
 
-          <div className="footer-copy">© 2026 Core Media. All Rights Reserved.</div>
+          <div className="footer-copy">
+            © 2023 LeaderNext. All Rights Reserved |{' '}
+            <Link href="/terms-and-conditions" className="footer-terms">
+              Terms &amp; Conditions
+            </Link>
+          </div>
         </div>
       </div>
     </footer>

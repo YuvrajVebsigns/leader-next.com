@@ -81,6 +81,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { FaLinkedinIn } from 'react-icons/fa';
 import { getLinkedInProfileUrl, removeLinkedInUrls } from '@/lib/social-links';
 import { fetchWebsitePageBySlug } from '@/services/pages.service';
+import PageHeroCard from '@/components/PageHeroCard';
 
 type JuryMember = {
   author: string;
@@ -136,16 +137,11 @@ export default function Jury2025() {
 
   return (
     <main className="jury-page">
-      <section className="jury-hero">
-        <div className="jury-container">
-          <span className="jury-badge">LeaderNext</span>
-          <h1 className="jury-title">{pageTitle}</h1>
-          <p className="jury-subtitle">
-            Meet the esteemed technology and business leaders guiding the LeaderNext selection
-            process.
-          </p>
-        </div>
-      </section>
+      <PageHeroCard
+        kicker="LeaderNext"
+        title={pageTitle}
+        description="Meet the esteemed technology and business leaders guiding the LeaderNext selection process."
+      />
 
       <section className="jury-section">
         <div className="jury-container">

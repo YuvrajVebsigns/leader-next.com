@@ -40,10 +40,10 @@ export default function PartnerSection() {
       <div className="partners-container leadernext-about-container">
         <div className="leadernext-about-header">
           <span className="leadernext-eyebrow">PARTNER</span>
-          <h2 id="partner-heading">Why Partner?</h2>
         </div>
 
         <div className="leadernext-content-card">
+          <h2 id="partner-heading">Why Partner?</h2>
           <p>
             LeaderNext is the quintessential platform that unites the most esteemed senior IT &
             digital executives in the country for an enriching and immersive program.

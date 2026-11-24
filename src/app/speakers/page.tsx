@@ -1,17 +1,15 @@
 import Link from 'next/link';
 import { speakerEntries } from './speakerData';
+import PageHeroCard from '@/components/PageHeroCard';
 
 export default function SpeakersPage() {
   return (
     <main className="speakers-page">
-      <section className="speakers-hero">
-        <p className="speakers-kicker">Speakers</p>
-        <h1>Speakers by Year</h1>
-        <p>
-          Browse the speaker archive from 2016 through 2025 using the navbar dropdown or these
-          direct route cards.
-        </p>
-      </section>
+      <PageHeroCard
+        kicker="Speakers"
+        title="Speakers by Year"
+        description="Browse the speaker archive from 2016 through 2025 using the navbar dropdown or these direct route cards."
+      />
 
       <section className="speakers-grid">
         {speakerEntries.map((speaker) => (
