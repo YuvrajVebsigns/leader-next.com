@@ -11,32 +11,13 @@ import {
   type WebsiteEvent,
 } from '@/services/events.service';
 
-function getStoredWebsiteId(): string | undefined {
-  if (typeof window === 'undefined') return undefined;
-
-  try {
-    const raw = window.localStorage.getItem('websiteAuth');
-    if (!raw) return undefined;
-
-    const parsed: unknown = JSON.parse(raw);
-    if (typeof parsed === 'object' && parsed !== null && 'websiteId' in parsed) {
-      const websiteId = (parsed as { websiteId?: unknown }).websiteId;
-      return typeof websiteId === 'string' ? websiteId : undefined;
-    }
-  } catch {
-    return undefined;
-  }
-
-  return undefined;
-}
-
 export default function ProjectsSection() {
   // const [activeVideo, setActiveVideo] = useState<number | null>(null);
 
   const [events, setEvents] = useState<WebsiteEvent[] | null>(null);
 
   useEffect(() => {
-    fetchWebsiteEvents(getStoredWebsiteId())
+    fetchWebsiteEvents()
       .then((data) => {
         if (Array.isArray(data) && data.length) setEvents(data);
         else setEvents([]);

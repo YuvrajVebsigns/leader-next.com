@@ -410,7 +410,7 @@ function mapEvent(it: RawEvent): WebsiteEvent {
   };
 }
 
-export function readStoredWebsiteAuth(): WebsiteAuth | null {
+export function readStoredWebsiteAuth(domain?: string): WebsiteAuth | null {
   if (typeof window === 'undefined') return null;
 
   const raw = window.localStorage.getItem('websiteAuth');
@@ -425,6 +425,8 @@ export function readStoredWebsiteAuth(): WebsiteAuth | null {
       typeof parsed.websiteId === 'string' &&
       typeof parsed.domain === 'string'
     ) {
+      if (domain && parsed.domain !== domain) return null;
+
       return {
         token: parsed.token,
         websiteId: parsed.websiteId,
@@ -441,7 +443,7 @@ export function readStoredWebsiteAuth(): WebsiteAuth | null {
 async function ensureWebsiteAuth(domain: string): Promise<WebsiteAuth | null> {
   if (typeof window === 'undefined') return null;
 
-  const stored = readStoredWebsiteAuth();
+  const stored = readStoredWebsiteAuth(domain);
   if (stored) return stored;
 
   const tokenRes = await apiFetch<unknown>(
@@ -495,16 +497,10 @@ function getApiErrorStatus(error: unknown) {
   return undefined;
 }
 
-export async function fetchWebsiteEvents(websiteId?: string): Promise<WebsiteEvent[]> {
+export async function fetchWebsiteEvents(): Promise<WebsiteEvent[]> {
   const domain = getWebsiteDomain();
-  let auth: WebsiteAuth | null = null;
-
-  if (!websiteId) {
-    auth = await ensureWebsiteAuth(domain);
-    websiteId = auth?.websiteId ?? undefined;
-  } else {
-    auth = readStoredWebsiteAuth();
-  }
+  const auth = await ensureWebsiteAuth(domain);
+  const websiteId = auth?.websiteId;
 
   const headers: Record<string, string> = {};
   if (auth?.token) headers.Authorization = `Bearer ${auth.token}`;

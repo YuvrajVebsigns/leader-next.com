@@ -201,26 +201,6 @@ import {
   type WebsiteEvent,
 } from '@/services/events.service';
 
-function getStoredWebsiteId(): string | undefined {
-  if (typeof window === 'undefined') return undefined;
-
-  try {
-    const raw = window.localStorage.getItem('websiteAuth');
-    if (!raw) return undefined;
-
-    const parsed: unknown = JSON.parse(raw);
-
-    if (typeof parsed === 'object' && parsed !== null && 'websiteId' in parsed) {
-      const websiteId = (parsed as { websiteId?: unknown }).websiteId;
-      return typeof websiteId === 'string' ? websiteId : undefined;
-    }
-  } catch {
-    return undefined;
-  }
-
-  return undefined;
-}
-
 function getEventTitle(event: WebsiteEvent): string {
   return event.title || 'Event';
 }
@@ -276,7 +256,7 @@ export default function EventsPage() {
     ) ?? null;
 
   useEffect(() => {
-    fetchWebsiteEvents(getStoredWebsiteId())
+    fetchWebsiteEvents()
       .then((data) => {
         setEvents(Array.isArray(data) ? data : []);
       })

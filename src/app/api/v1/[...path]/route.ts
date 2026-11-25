@@ -23,6 +23,7 @@ async function proxyRequest(request: NextRequest) {
   headers.delete('host');
   headers.delete('connection');
   headers.delete('content-length');
+  headers.set('accept-encoding', 'gzip, deflate, br');
 
   const init: RequestInit = {
     method: request.method,

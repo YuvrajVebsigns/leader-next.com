@@ -186,9 +186,10 @@ function extractCommentItems(response: unknown): WebsiteBlogComment[] {
 type WebsiteAuth = {
   token: string;
   websiteId: string;
+  domain?: string;
 };
 
-function readStoredWebsiteAuth(): WebsiteAuth | null {
+function readStoredWebsiteAuth(domain: string): WebsiteAuth | null {
   if (typeof window === 'undefined') return null;
 
   const raw = window.localStorage.getItem('websiteAuth');
@@ -204,11 +205,15 @@ function readStoredWebsiteAuth(): WebsiteAuth | null {
       'token' in parsed &&
       'websiteId' in parsed &&
       typeof (parsed as { token?: unknown }).token === 'string' &&
-      typeof (parsed as { websiteId?: unknown }).websiteId === 'string'
+      typeof (parsed as { websiteId?: unknown }).websiteId === 'string' &&
+      'domain' in parsed &&
+      typeof (parsed as { domain?: unknown }).domain === 'string' &&
+      parsed.domain === domain
     ) {
       return {
         token: (parsed as { token: string }).token,
         websiteId: (parsed as { websiteId: string }).websiteId,
+        domain,
       };
     }
   } catch {
@@ -290,7 +295,7 @@ function extractWebsiteId(response: {
 async function ensureWebsiteAuth(domain: string) {
   if (typeof window === 'undefined') return null;
 
-  const stored = readStoredWebsiteAuth();
+  const stored = readStoredWebsiteAuth(domain);
   if (stored) return stored;
 
   const { apiFetch } = await import('@/services/apiFetch');
@@ -325,7 +330,7 @@ async function ensureWebsiteAuth(domain: string) {
   const websiteId = extractWebsiteId(tokenRes);
 
   if (token && websiteId) {
-    const value: WebsiteAuth = { token, websiteId };
+    const value: WebsiteAuth = { token, websiteId, domain };
     window.localStorage.setItem('websiteAuth', JSON.stringify(value));
     return value;
   }
