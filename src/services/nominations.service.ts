@@ -9,9 +9,22 @@ import { apiFetch, ApiError } from '@/services/apiFetch';
 import type {
   NominationStatusResponse,
   NominationResponse,
+  NominationCategory,
+  NominationSubcategory,
   NominationSubmissionInput,
   SubmitNominationApiBody,
 } from '@/types/nominations.types';
+
+type NominationCollectionResponse<T> = {
+  success?: boolean;
+  message?: string;
+  data?: T[];
+};
+
+export type NominationOptions = {
+  categories: NominationCategory[];
+  subcategories: NominationSubcategory[];
+};
 
 async function getNominationStatusResponse(): Promise<NominationStatusResponse> {
   const auth = await ensureWebsiteAuth();
@@ -24,6 +37,84 @@ async function getNominationStatusResponse(): Promise<NominationStatusResponse> 
       'x-website-domain': auth.domain,
     },
   });
+}
+
+function validateNominationCollection<T extends { id: string; name: string; isActive: boolean }>(
+  response: NominationCollectionResponse<T>,
+  resourceName: string,
+): T[] {
+  if (response.success !== true || !Array.isArray(response.data)) {
+    throw new Error(response.message || `Unable to load nomination ${resourceName}.`);
+  }
+
+  if (
+    response.data.some(
+      (item) =>
+        typeof item.id !== 'string' ||
+        typeof item.name !== 'string' ||
+        typeof item.isActive !== 'boolean',
+    )
+  ) {
+    throw new Error(`The nomination ${resourceName} response has an invalid format.`);
+  }
+
+  return response.data.filter((item) => item.isActive);
+}
+
+async function getNominationOptionsResponse(): Promise<NominationOptions> {
+  const auth = await ensureWebsiteAuth();
+  const headers = {
+    ...buildWebsiteAuthHeaders(auth),
+    'x-website-domain': auth.domain,
+  };
+  const [categoriesResponse, subcategoriesResponse] = await Promise.all([
+    apiFetch<NominationCollectionResponse<NominationCategory>>(
+      API_ENDPOINTS.WEBSITE.NOMINATION_CATEGORIES,
+      {
+        method: 'GET',
+        requireAuth: false,
+        headers,
+      },
+    ),
+    apiFetch<NominationCollectionResponse<NominationSubcategory>>(
+      API_ENDPOINTS.WEBSITE.NOMINATION_SUBCATEGORIES,
+      {
+        method: 'GET',
+        requireAuth: false,
+        headers,
+      },
+    ),
+  ]);
+
+  const categories = validateNominationCollection(categoriesResponse, 'categories');
+  const subcategories = validateNominationCollection(subcategoriesResponse, 'subcategories');
+
+  if (
+    subcategories.some((subcategory) => {
+      const categoryId =
+        typeof subcategory.categoryId === 'string'
+          ? subcategory.categoryId
+          : subcategory.categoryId?.id;
+      return typeof categoryId !== 'string';
+    })
+  ) {
+    throw new Error('The nomination subcategories response has an invalid category reference.');
+  }
+
+  return { categories, subcategories };
+}
+
+export async function fetchWebsiteNominationOptions(): Promise<NominationOptions> {
+  try {
+    return await getNominationOptionsResponse();
+  } catch (error: unknown) {
+    if (getApiErrorStatus(error) !== 401) {
+      throw error;
+    }
+
+    clearWebsiteAuth();
+    return getNominationOptionsResponse();
+  }
 }
 
 function isNominationActive(response: NominationStatusResponse): boolean {
@@ -54,6 +145,7 @@ function buildSubmitNominationBody(input: NominationSubmissionInput): SubmitNomi
     nominatorEmail: input.nominatorEmail.trim(),
     nominees: input.nominees.map((nominee) => ({
       categoryId: nominee.categoryId.trim(),
+      subCategoryId: nominee.subCategoryId.trim(),
       contactName: nominee.contactName.trim(),
       companyName: nominee.companyName.trim(),
       contactEmail: nominee.contactEmail.trim(),

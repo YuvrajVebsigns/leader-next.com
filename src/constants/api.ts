@@ -25,7 +25,9 @@ export const API_ENDPOINTS = {
       BASE: (id: string) => `/api/v1/website/blogs/${encodeURIComponent(id)}/comments`,
     },
     NOMINATIONS: '/api/v1/website/nominations',
-    NOMINATION_STATUS: 'https://api.core-mediagroup.com/api/v1/website/nominations/status',
+    NOMINATION_STATUS: '/api/v1/website/nominations/status',
+    NOMINATION_CATEGORIES: '/api/v1/website/nominations/categories',
+    NOMINATION_SUBCATEGORIES: '/api/v1/website/nominations/sub-categories',
     SPONSORS: {
       BASE: '/api/v1/website/sponsors',
       BY_ID: (id: string) => `/api/v1/website/sponsors/${encodeURIComponent(id)}`,

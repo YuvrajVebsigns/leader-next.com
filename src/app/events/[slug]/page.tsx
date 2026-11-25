@@ -5,10 +5,12 @@ import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { ArrowUpRight } from 'lucide-react';
 import { ArrowUpLeft } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { FaFacebookF, FaInstagram, FaLink, FaWhatsapp, FaXTwitter } from 'react-icons/fa6';
 import ClientErrorBoundary from '@/components/ClientErrorBoundary';
 import EventDetailsAnimated from '@/components/EventDetailsAnimated';
 import EventSponsorsSection from '@/components/EventSponsorsSection';
+import shareStyles from '@/components/ShareFeedback.module.css';
 import { resolveEventSponsors } from '@/lib/event-sponsors';
 import {
   fetchWebsiteEventByIdOrSlug,
@@ -35,14 +37,6 @@ function getEventField(event: WebsiteEvent, key: string): unknown {
   return (event as unknown as Record<string, unknown>)[key];
 }
 
-function openExternal(url: string) {
-  try {
-    window.open(url, '_blank', 'noopener');
-  } catch (_) {
-    // ignore
-  }
-}
-
 export default function EventDetailsPage() {
   const params = useParams<{ slug?: string | string[] }>();
 
@@ -54,6 +48,17 @@ export default function EventDetailsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showShareOptions, setShowShareOptions] = useState(false);
+  const [copyLinkStatus, setCopyLinkStatus] = useState<'copied' | 'error' | null>(null);
+  const copyLinkTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(
+    () => () => {
+      if (copyLinkTimeoutRef.current) {
+        clearTimeout(copyLinkTimeoutRef.current);
+      }
+    },
+    [],
+  );
 
   function extractTextFromContent(content: unknown): string {
     if (!content) return '';
@@ -183,40 +188,43 @@ export default function EventDetailsPage() {
   const shareUrl = typeof window !== 'undefined' ? `${window.location.origin}/events/${slug}` : '';
   const displayTitle = event?.title || 'Check this event';
 
-  async function handleShareWhatsApp() {
-    const waUrl = `https://web.whatsapp.com/send?text=${encodeURIComponent(shareUrl)}`;
-    openExternal(waUrl);
+  function openExternal(url: string) {
+    window.open(url, '_blank', 'noopener,noreferrer');
     setShowShareOptions(false);
   }
 
-  async function handleShareFacebook() {
-    const fbUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
-    openExternal(fbUrl);
-    setShowShareOptions(false);
+  function handleShareWhatsApp() {
+    openExternal(`https://web.whatsapp.com/send?text=${encodeURIComponent(shareUrl)}`);
   }
 
-  async function handleShareTwitter() {
-    const twUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(displayTitle || '')}&url=${encodeURIComponent(shareUrl)}`;
-    openExternal(twUrl);
-    setShowShareOptions(false);
+  function handleShareFacebook() {
+    openExternal(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`);
   }
 
-  async function handleShareInstagram() {
-    const igWeb = `https://www.instagram.com/?url=${encodeURIComponent(shareUrl)}`;
-    openExternal(igWeb);
-    setShowShareOptions(false);
+  function handleShareTwitter() {
+    openExternal(
+      `https://twitter.com/intent/tweet?text=${encodeURIComponent(displayTitle)}&url=${encodeURIComponent(shareUrl)}`,
+    );
+  }
+
+  function handleShareInstagram() {
+    openExternal(`https://www.instagram.com/?url=${encodeURIComponent(shareUrl)}`);
   }
 
   async function copyLinkToClipboard() {
+    if (copyLinkTimeoutRef.current) {
+      clearTimeout(copyLinkTimeoutRef.current);
+    }
+
     try {
       await navigator.clipboard.writeText(shareUrl);
-      // Small UX feedback could be added here (toast), kept minimal per request
+      setCopyLinkStatus('copied');
     } catch (_) {
-      // ignore
+      setCopyLinkStatus('error');
     }
-  }
 
-  // Inline icon components removed (not used) to satisfy linter
+    copyLinkTimeoutRef.current = setTimeout(() => setCopyLinkStatus(null), 2200);
+  }
 
   if (isLoading) {
     return (
@@ -470,48 +478,71 @@ export default function EventDetailsPage() {
                   </div>
                 </button>
 
-                <br />
-
                 {showShareOptions ? (
                   <div className="share-popup" role="menu" aria-labelledby="share-button">
                     <button
                       type="button"
                       onClick={handleShareWhatsApp}
                       className="share-option whatsapp"
+                      role="menuitem"
+                      aria-label="Share on WhatsApp"
+                      title="WhatsApp"
                     >
-                      <span>WhatsApp</span>
+                      <FaWhatsapp aria-hidden="true" />
                     </button>
 
                     <button
                       type="button"
                       onClick={handleShareFacebook}
                       className="share-option facebook"
+                      role="menuitem"
+                      aria-label="Share on Facebook"
+                      title="Facebook"
                     >
-                      <span>Facebook</span>
+                      <FaFacebookF aria-hidden="true" />
                     </button>
 
                     <button
                       type="button"
                       onClick={handleShareTwitter}
                       className="share-option twitter"
+                      role="menuitem"
+                      aria-label="Share on X"
+                      title="X"
                     >
-                      <span>Twitter</span>
+                      <FaXTwitter aria-hidden="true" />
                     </button>
 
                     <button
                       type="button"
                       onClick={handleShareInstagram}
                       className="share-option instagram"
+                      role="menuitem"
+                      aria-label="Share on Instagram"
+                      title="Instagram"
                     >
-                      <span>Instagram</span>
+                      <FaInstagram aria-hidden="true" />
                     </button>
 
                     <button
                       type="button"
                       onClick={copyLinkToClipboard}
-                      className="share-option copy"
+                      className={`share-option copy ${shareStyles.copyButton}`}
+                      role="menuitem"
+                      aria-label="Copy event link"
+                      title="Copy link"
                     >
-                      <span>Copy Link</span>
+                      <FaLink aria-hidden="true" />
+                      {copyLinkStatus ? (
+                        <span
+                          className={`${shareStyles.feedback} ${
+                            copyLinkStatus === 'error' ? shareStyles.feedbackError : ''
+                          }`}
+                          role="status"
+                        >
+                          {copyLinkStatus === 'copied' ? 'Link copied' : 'Could not copy link'}
+                        </span>
+                      ) : null}
                     </button>
                   </div>
                 ) : null}

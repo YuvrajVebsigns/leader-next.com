@@ -263,7 +263,7 @@ export default function BlogCommentsPanel({ blogId }: BlogCommentsPanelProps) {
       {loadingComments ? <p className="blog-comments-panel-status">Loading comments...</p> : null}
 
       {!loadingComments && comments.length === 0 ? (
-        <p className="blog-comments-panel-status">No approved comments yet.</p>
+        <p className="blog-comments-panel-status">No comments yet. Be the first!</p>
       ) : null}
 
       <div className="blog-comments-panel-list">
@@ -311,13 +311,20 @@ export default function BlogCommentsPanel({ blogId }: BlogCommentsPanelProps) {
             onChange={(e) => setAuthorEmail(e.target.value)}
           />
 
-          <textarea
-            rows={3}
-            placeholder="Your comment *"
-            value={content}
-            disabled={isSubmitting}
-            onChange={(e) => setContent(e.target.value)}
-          />
+          <div className="blog-comments-panel-textarea-wrapper">
+            <textarea
+              rows={3}
+              maxLength={500}
+              placeholder="Share your thoughts.... "
+              value={content}
+              disabled={isSubmitting}
+              aria-label={`Your comment, ${content.length} of 500 characters`}
+              onChange={(e) => setContent(e.target.value)}
+            />
+            <span className="blog-comments-panel-character-count" aria-hidden="true">
+              {content.length}/500
+            </span>
+          </div>
 
           <button type="submit" disabled={isSubmitting}>
             {isSubmitting ? 'Submitting...' : 'Submit Comment'}

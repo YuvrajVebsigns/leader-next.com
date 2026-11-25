@@ -1,0 +1,117 @@
+.container {
+  position: relative;
+  width: 100%;
+  z-index: 1;
+}
+
+.trigger {
+  display: flex;
+  width: 100%;
+  height: 60px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 18px;
+  border: 1px solid #e8cccc;
+  border-radius: 18px;
+  background: #fff;
+  color: #343030;
+  font: inherit;
+  font-size: 15px;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.trigger:focus-visible,
+.trigger.open {
+  outline: none;
+  border-color: #8e0101;
+  box-shadow: 0 0 0 3px rgba(142, 1, 1, 0.12);
+}
+
+.trigger:disabled {
+  background: #f3f3f3;
+  color: #858585;
+  cursor: not-allowed;
+}
+
+.trigger > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.placeholder {
+  color: #898989;
+}
+
+.arrow {
+  flex: 0 0 auto;
+  color: #8e0101;
+  transition: transform 0.15s ease;
+}
+
+.open .arrow {
+  transform: rotate(180deg);
+}
+
+.menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 100;
+  width: 100%;
+  max-height: 300px;
+  overflow-y: auto;
+  padding: 4px 0;
+  border: 1px solid #e7dada;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.16);
+  overscroll-behavior: contain;
+}
+
+.option {
+  display: block;
+  width: 100%;
+  min-height: 50px;
+  padding: 12px 14px;
+  border: 0;
+  background: #fff;
+  color: #292626;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+}
+
+.option:hover,
+.option:focus-visible {
+  outline: none;
+  background: #f8eaea;
+}
+
+.option.selected {
+  background: #8e0101;
+  color: #fff;
+}
+
+.option.selected:focus-visible,
+.option.selected:hover {
+  background: #760000;
+}
+
+@media (max-width: 640px) {
+  .trigger {
+    height: 52px;
+    border-radius: 16px;
+  }
+
+  .menu {
+    max-height: 240px;
+  }
+}

@@ -140,6 +140,7 @@ function AnimatedBlogCard({ blog, index, variant = 'animate-fade-in' }: Animated
     <div ref={ref} className="blog-design-item" style={{ transitionDelay: `${index * 60}ms` }}>
       <BlogCard
         title={blog.title}
+        authorName={getBlogAuthor(blog)}
         excerpt={getBlogDescription(blog)}
         image={imageSrc}
         imageAlt={blog.title}
@@ -275,7 +276,7 @@ export default function BlogPage() {
       <section className="blog-hero blog-listing-hero">
         <div className="blog-hero-media" ref={heroMediaRef}>
           <Image
-            src="/assets/blogs/new-banner.jpeg"
+            src="/assets/blogs/new-banner2.png"
             alt="Read Blog"
             fill
             priority

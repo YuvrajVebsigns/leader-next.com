@@ -28,15 +28,22 @@ export default function CountryCodeSelect({
 }: CountryCodeSelectProps) {
   const options = useMemo(
     () =>
-      getCountries().map((country: Country) => {
-        const dialCode = getDialCodeFromCountry(country);
-        const label = (en as Record<string, string>)[country] ?? country;
-        return {
-          country,
-          dialCode,
-          label: `${label} (${dialCode})`,
-        };
-      }),
+      getCountries()
+        .map((country: Country) => {
+          const dialCode = getDialCodeFromCountry(country);
+          const label = (en as Record<string, string>)[country] ?? country;
+          return {
+            country,
+            dialCode,
+            countryLabel: label,
+            label: `${label} (${dialCode})`,
+          };
+        })
+        .sort((first, second) =>
+          first.countryLabel.localeCompare(second.countryLabel, undefined, {
+            sensitivity: 'base',
+          }),
+        ),
     [],
   );
 

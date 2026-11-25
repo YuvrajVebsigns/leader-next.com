@@ -4,6 +4,7 @@ import type { ReactNode } from 'react';
 
 type BlogCardProps = {
   title: string;
+  authorName?: string;
   excerpt?: string;
   image: string;
   imageAlt?: string;
@@ -14,6 +15,7 @@ type BlogCardProps = {
 
 export default function BlogCard({
   title,
+  authorName,
   excerpt,
   image,
   imageAlt,
@@ -37,6 +39,11 @@ export default function BlogCard({
 
       <div className="blog-design-content">
         <h2 className="blog-design-title">{title}</h2>
+        {authorName ? (
+          <p className="blog-design-author">
+            By <strong>{authorName}</strong>
+          </p>
+        ) : null}
         {excerpt ? <p className="blog-design-excerpt">{excerpt}</p> : null}
 
         <div className="blog-design-footer">

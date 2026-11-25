@@ -1,9 +1,25 @@
 export type NomineeInput = {
   categoryId: string;
+  subCategoryId: string;
   contactName: string;
   companyName: string;
   contactEmail: string;
   mobileNo?: string;
+};
+
+export type NominationCategory = {
+  id: string;
+  name: string;
+  isActive: boolean;
+  sortOrder: number;
+};
+
+export type NominationSubcategory = {
+  id: string;
+  name: string;
+  categoryId: string | { id: string; name: string; slug: string };
+  isActive: boolean;
+  sortOrder: number;
 };
 
 export type NominationSubmissionInput = {
@@ -24,6 +40,7 @@ export type SubmitNominationApiBody = {
   nominatorEmail: string;
   nominees: {
     categoryId: string;
+    subCategoryId: string;
     contactName: string;
     companyName: string;
     contactEmail: string;

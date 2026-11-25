@@ -215,6 +215,7 @@ export default function BlogsSection() {
               <div className="blog-design-item" key={String(blog.id)} ref={blogRefs[index]}>
                 <BlogCard
                   title={blog.title}
+                  authorName={blog.author?.name || blog.author?.fullName || 'CORE Media Team'}
                   excerpt={blog.excerpt}
                   image={getWebsiteBlogImage(blog)}
                   imageAlt={blog.title}

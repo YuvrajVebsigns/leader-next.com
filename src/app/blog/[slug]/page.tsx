@@ -3,16 +3,22 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { ArrowUpLeft, ArrowUpRight, MessageCircle, X } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { ArrowUpLeft, ArrowUpRight, X } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { FaFacebookF, FaInstagram, FaLink, FaWhatsapp, FaXTwitter } from 'react-icons/fa6';
 import useScrollAnimation from '../../../hooks/useScrollAnimation';
 import BlogCommentsPanel from '@/components/BlogCommentsPanel';
+import AuthorCard from '@/components/AuthorCard';
+import { createBlogAuthorSlug } from '@/lib/blog-author';
 import {
   getWebsiteBlogImage,
   fetchWebsiteBlogBySlug,
+  fetchWebsiteBlogs,
   type WebsiteBlogContentBlock,
   type WebsiteBlogDetailItem,
+  type WebsiteBlogItem,
 } from '@/services/blogs.service';
+import shareStyles from '@/components/ShareFeedback.module.css';
 
 function AnimatedBlock({
   children,
@@ -154,7 +160,57 @@ export default function BlogDetailsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showShareOptions, setShowShareOptions] = useState(false);
+  const [copyLinkStatus, setCopyLinkStatus] = useState<'copied' | 'error' | null>(null);
   const [isCommentsOpen, setIsCommentsOpen] = useState(false);
+  const [isAuthorCardOpen, setIsAuthorCardOpen] = useState(false);
+  const [latestAuthorBlogs, setLatestAuthorBlogs] = useState<WebsiteBlogItem[]>([]);
+  const [isLoadingAuthorBlogs, setIsLoadingAuthorBlogs] = useState(false);
+  const copyLinkTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    if (!isAuthorCardOpen) return;
+
+    function closeAuthorCardOnOutsideClick(event: PointerEvent) {
+      const target = event.target;
+
+      if (
+        !(target instanceof Element) ||
+        !target.closest('#blog-author-card, .blog-author-trigger')
+      ) {
+        setIsAuthorCardOpen(false);
+      }
+    }
+
+    document.addEventListener('pointerdown', closeAuthorCardOnOutsideClick);
+    return () => document.removeEventListener('pointerdown', closeAuthorCardOnOutsideClick);
+  }, [isAuthorCardOpen]);
+
+  useEffect(() => {
+    if (!isCommentsOpen) return;
+
+    function closeCommentsOnOutsideClick(event: PointerEvent) {
+      const target = event.target;
+
+      if (
+        !(target instanceof Element) ||
+        !target.closest('#blog-comments-popover, .blog-comments-toggle')
+      ) {
+        setIsCommentsOpen(false);
+      }
+    }
+
+    document.addEventListener('pointerdown', closeCommentsOnOutsideClick);
+    return () => document.removeEventListener('pointerdown', closeCommentsOnOutsideClick);
+  }, [isCommentsOpen]);
+
+  useEffect(
+    () => () => {
+      if (copyLinkTimeoutRef.current) {
+        clearTimeout(copyLinkTimeoutRef.current);
+      }
+    },
+    [],
+  );
 
   useEffect(() => {
     let isMounted = true;
@@ -197,6 +253,43 @@ export default function BlogDetailsPage() {
     };
   }, [slug]);
 
+  useEffect(() => {
+    if (!isAuthorCardOpen) return;
+
+    let isMounted = true;
+
+    async function loadAuthorBlogs() {
+      setIsLoadingAuthorBlogs(true);
+
+      try {
+        const response = await fetchWebsiteBlogs(1, 10);
+        const blogs = response.data?.data ?? [];
+        const otherBlogs = blogs.filter((item) => item.slug !== slug);
+        const sameAuthorBlogs = blog?.author?.id
+          ? otherBlogs.filter((item) => item.author?.id === blog.author?.id)
+          : [];
+
+        if (isMounted) {
+          setLatestAuthorBlogs((sameAuthorBlogs.length ? sameAuthorBlogs : otherBlogs).slice(0, 3));
+        }
+      } catch {
+        if (isMounted) {
+          setLatestAuthorBlogs([]);
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoadingAuthorBlogs(false);
+        }
+      }
+    }
+
+    loadAuthorBlogs();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [blog?.author?.id, isAuthorCardOpen, slug]);
+
   if (isLoading) {
     return (
       <main className="blog-detail-page">
@@ -233,6 +326,20 @@ export default function BlogDetailsPage() {
   const displayDate = formatPublishedDate(blog.publishedAt);
   const authorName = blog.author?.name ?? blog.author?.fullName;
   const displayAuthor = typeof authorName === 'string' ? authorName.trim() : '';
+  const authorSlug = createBlogAuthorSlug(displayAuthor);
+  const isAnoopMathur = displayAuthor.toLowerCase() === 'anoop mathur';
+  const authorProfile = {
+    name: displayAuthor,
+    imageUrl: isAnoopMathur ? '/assets/team/Anoop-Mathur.png' : undefined,
+    designation: isAnoopMathur ? 'Founder' : undefined,
+    company: isAnoopMathur ? 'CORE MEDIA' : undefined,
+    linkedInUrl: isAnoopMathur ? 'https://www.linkedin.com/in/mathuranoop/' : undefined,
+  };
+  const authorArticles = latestAuthorBlogs.map((item) => ({
+    title: item.title,
+    href: `/blog/${item.slug}`,
+    publishedAt: formatPublishedDate(item.publishedAt),
+  }));
   const displayImage = getWebsiteBlogImage(blog);
   const contentBlocks = getBlogContentBlocks(blog);
   const shareUrl = typeof window !== 'undefined' ? `${window.location.origin}/blog/${slug}` : '';
@@ -271,12 +378,18 @@ export default function BlogDetailsPage() {
   // minimal helpers kept; unused icon components removed to satisfy linter
 
   async function copyLinkToClipboard() {
+    if (copyLinkTimeoutRef.current) {
+      clearTimeout(copyLinkTimeoutRef.current);
+    }
+
     try {
       await navigator.clipboard.writeText(shareUrl);
-      // Small UX feedback could be added here (toast), kept minimal per request
+      setCopyLinkStatus('copied');
     } catch (_) {
-      // ignore
+      setCopyLinkStatus('error');
     }
+
+    copyLinkTimeoutRef.current = setTimeout(() => setCopyLinkStatus(null), 2200);
   }
 
   return (
@@ -303,7 +416,28 @@ export default function BlogDetailsPage() {
             animationClass="animate-fade-in-left"
             initialTransform="translateX(-24px)"
           >
-            <h1 className="blogpage-title">{displayTitle}</h1>
+            <div className="blogpage-title-row">
+              <h1 className="blogpage-title">{displayTitle}</h1>
+
+              <div className="blog-comments-widget">
+                <button
+                  type="button"
+                  className="blog-comments-toggle"
+                  onClick={() => setIsCommentsOpen((isOpen) => !isOpen)}
+                  aria-label={isCommentsOpen ? 'Close comments' : 'Open comments'}
+                  aria-expanded={isCommentsOpen}
+                  aria-controls={isCommentsOpen ? 'blog-comments-popover' : undefined}
+                >
+                  <Image
+                    src="/assets/blogs/comment.png"
+                    alt=""
+                    width={55}
+                    height={55}
+                    aria-hidden="true"
+                  />
+                </button>
+              </div>
+            </div>
 
             {displayExcerpt ? <p className="blogpage-intro">{displayExcerpt}</p> : null}
 
@@ -312,15 +446,64 @@ export default function BlogDetailsPage() {
                 {displayDate ? <p className="blogpage-meta">Published on {displayDate}</p> : null}
                 {displayAuthor ? (
                   <p className="blogpage-meta">
-                    By <span className="blogpage-author-name">{displayAuthor}</span>
+                    By{' '}
+                    <button
+                      type="button"
+                      className="blog-author-trigger"
+                      onClick={() => setIsAuthorCardOpen((isOpen) => !isOpen)}
+                      aria-expanded={isAuthorCardOpen}
+                      aria-controls={isAuthorCardOpen ? 'blog-author-card' : undefined}
+                    >
+                      {displayAuthor}
+                    </button>
                   </p>
                 ) : null}
               </div>
             ) : null}
 
+            {isCommentsOpen ? (
+              <aside
+                id="blog-comments-popover"
+                className="blog-comments-popover"
+                aria-label="Comments"
+              >
+                <header className="blog-comments-popover-header">
+                  <div>
+                    <h2>Comments</h2>
+                    {/* <p>Join the conversation</p> */}
+                  </div>
+                  <button
+                    type="button"
+                    className="blog-comments-popover-close"
+                    onClick={() => setIsCommentsOpen(false)}
+                    aria-label="Close comments"
+                  >
+                    <X size={20} aria-hidden="true" />
+                  </button>
+                </header>
+
+                {blog.id ? (
+                  <BlogCommentsPanel blogId={String(blog.id)} />
+                ) : (
+                  <p className="blog-comments-panel-status">No comments available.</p>
+                )}
+              </aside>
+            ) : null}
+
+            {isAuthorCardOpen ? (
+              <AuthorCard
+                author={authorProfile}
+                articles={authorArticles}
+                allPostsHref={authorSlug ? `/blog/author/${authorSlug}` : '/blog'}
+                isLoadingArticles={isLoadingAuthorBlogs}
+                onClose={() => setIsAuthorCardOpen(false)}
+              />
+            ) : null}
+
             <div className="blog-content-blocks">
               {contentBlocks.map((block, index) => renderBlock(block, index))}
             </div>
+            <div className="blog-author-card-clear" aria-hidden="true" />
 
             <div className="blog-detail-actions">
               <AnimatedBlock
@@ -357,63 +540,72 @@ export default function BlogDetailsPage() {
                     </div>
                   </button>
 
-                  <br />
-
                   {showShareOptions ? (
                     <div className="share-popup" role="menu" aria-labelledby="share-button">
                       <button
                         type="button"
                         onClick={handleShareWhatsApp}
                         className="share-option whatsapp"
+                        role="menuitem"
+                        aria-label="Share on WhatsApp"
+                        title="WhatsApp"
                       >
-                        {/* <span style={{ display: 'inline-flex', marginRight: 8 }}>
-                        <WhatsAppIcon />
-                      </span> */}
-                        <span>WhatsApp</span>
+                        <FaWhatsapp aria-hidden="true" />
                       </button>
 
                       <button
                         type="button"
                         onClick={handleShareFacebook}
                         className="share-option facebook"
+                        role="menuitem"
+                        aria-label="Share on Facebook"
+                        title="Facebook"
                       >
-                        {/* <span style={{ display: 'inline-flex', marginRight: 8 }}>
-                        <FacebookIcon />
-                      </span> */}
-                        <span>Facebook</span>
+                        <FaFacebookF aria-hidden="true" />
                       </button>
 
                       <button
                         type="button"
                         onClick={handleShareTwitter}
                         className="share-option twitter"
+                        role="menuitem"
+                        aria-label="Share on X"
+                        title="X"
                       >
-                        {/* <span style={{ display: 'inline-flex', marginRight: 8 }}>
-                        <TwitterIcon />
-                      </span> */}
-                        <span>Twitter</span>
+                        <FaXTwitter aria-hidden="true" />
                       </button>
 
                       <button
                         type="button"
                         onClick={handleShareInstagram}
                         className="share-option instagram"
+                        role="menuitem"
+                        aria-label="Share on Instagram"
+                        title="Instagram"
                       >
-                        {/* <span style={{ display: 'inline-flex', marginRight: 8 }}>
-                        <InstagramIcon />
-                      </span> */}
-                        <span>Instagram</span>
+                        <FaInstagram aria-hidden="true" />
                       </button>
 
                       <button
                         type="button"
                         onClick={copyLinkToClipboard}
-                        className="share-option copy"
+                        className={`share-option copy ${shareStyles.copyButton}`}
+                        role="menuitem"
+                        aria-label="Copy blog link"
+                        title="Copy link"
                       >
-                        {/* <span style={{ display: 'inline-flex', marginRight: 8 }}>
-                        <LinkIcon />
-                      </span> */}
-                        <span>Copy Link</span>
+                        <FaLink aria-hidden="true" />
+                        {copyLinkStatus ? (
+                          <span
+                            id="share-copy-feedback"
+                            className={`${shareStyles.feedback} ${
+                              copyLinkStatus === 'error' ? shareStyles.feedbackError : ''
+                            }`}
+                            role="status"
+                          >
+                            {copyLinkStatus === 'copied' ? 'Link copied' : 'Could not copy link'}
+                          </span>
+                        ) : null}
                       </button>
                     </div>
                   ) : null}
@@ -423,44 +615,6 @@ export default function BlogDetailsPage() {
           </AnimatedBlock>
         </div>
       </article>
-
-      <div className="blog-comments-widget">
-        <button
-          type="button"
-          className="blog-comments-toggle"
-          onClick={() => setIsCommentsOpen((isOpen) => !isOpen)}
-          aria-label={isCommentsOpen ? 'Close comments' : 'Open comments'}
-          aria-expanded={isCommentsOpen}
-          aria-controls={isCommentsOpen ? 'blog-comments-popover' : undefined}
-        >
-          <MessageCircle size={24} aria-hidden="true" />
-        </button>
-
-        {isCommentsOpen ? (
-          <aside id="blog-comments-popover" className="blog-comments-popover" aria-label="Comments">
-            <header className="blog-comments-popover-header">
-              <div>
-                <h2>Comments</h2>
-                <p>Join the conversation</p>
-              </div>
-              <button
-                type="button"
-                className="blog-comments-popover-close"
-                onClick={() => setIsCommentsOpen(false)}
-                aria-label="Close comments"
-              >
-                <X size={20} aria-hidden="true" />
-              </button>
-            </header>
-
-            {blog.id ? (
-              <BlogCommentsPanel blogId={String(blog.id)} />
-            ) : (
-              <p className="blog-comments-panel-status">No comments available.</p>
-            )}
-          </aside>
-        ) : null}
-      </div>
     </main>
   );
 }
