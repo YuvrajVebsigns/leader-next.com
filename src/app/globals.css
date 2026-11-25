@@ -6366,6 +6366,7 @@ main {
 .event-card-image {
   z-index: 0;
   object-fit: cover;
+  object-position: 100% 0%;
   transition: transform 500ms ease;
 }
 
@@ -6379,7 +6380,7 @@ main {
 }
 
 .event-card-link:hover .event-card-image {
-  transform: scale(1.05);
+  transform: none;
 }
 
 .event-card-link:focus-visible {
@@ -9296,16 +9297,20 @@ main {
 
 .event-details-image-wrap {
   position: relative;
-  width: 100%;
-  height: 340px;
+  left: 50%;
+  width: min(120%, calc(100vw - 32px));
+  height: clamp(198px, 46.8vw, 526.5px);
   margin-top: 100px;
   overflow: hidden;
+  transform: translateX(-50%);
   border-radius: 10px;
+  background: #f7f3f3;
   box-shadow: 0 18px 40px rgba(0, 0, 0, 0.08);
 }
 
 .event-details-image {
-  object-fit: cover;
+  object-fit: contain;
+  object-position: center;
 }
 
 .event-details-headline {
@@ -9652,10 +9657,6 @@ main {
     grid-template-columns: 1fr;
   }
 
-  .event-details-image-wrap {
-    height: 280px;
-  }
-
   .event-sponsors-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 16px;
@@ -9665,10 +9666,6 @@ main {
 @media (max-width: 640px) {
   .event-details-page {
     padding: 0 12px 64px;
-  }
-
-  .event-details-image-wrap {
-    height: 220px;
   }
 
   .event-details-quote {
@@ -14400,7 +14397,8 @@ s .dialogues-badge-mark {
 .winner-profile-media {
   position: relative;
   width: 100%;
-  height: 300px;
+  height: auto;
+  aspect-ratio: 3 / 2;
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -15263,19 +15261,25 @@ s .dialogues-badge-mark {
 .eligibility-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
+  column-gap: 20px;
+  row-gap: 12px;
+  align-items: start;
 }
 
 .eligibility-card {
   display: flex;
   gap: 16px;
-  align-items: flex-start;
+  align-items: center;
   padding: 24px;
 }
 
 .eligibility-card svg {
   color: #8e0101;
   flex-shrink: 0;
+}
+
+.eligibility-card p {
+  margin: 0;
 }
 
 .process-cta {

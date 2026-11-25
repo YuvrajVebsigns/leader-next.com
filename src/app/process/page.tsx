@@ -14,11 +14,11 @@ const processSteps = [
 
 const eligibility = [
   'A resident of India at the time of application.',
-  'Applicants reporting directly to the CIO/CDO/ICT Leader/Senior Most ICT Decision Maker of the organization can apply.',
+  'Valid documentation of current work experience and personal details.',
   'A minimum of 10 years of full-time work experience.',
   'Application only once per applicant permissible.',
   'Currently employed within a company or organization (self-employment is not eligible).',
-  'Valid documentation of current work experience and personal details.',
+  'Applicants reporting directly to the CIO/CDO/ICT Leader/Senior Most ICT Decision Maker of the organization can apply.',
   'Required permissions from current employer organization to be a part of LeaderNext 2026.',
 ];
 
