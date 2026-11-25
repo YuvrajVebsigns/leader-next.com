@@ -31,7 +31,7 @@ export default function Partners2024() {
             </div>
 
             <div className="partner-logo-card">
-              <img src="/assets/partner/Associate_partners_5.png" alt="IceWarp" />
+              <img src="/assets/partner/Associate_Partners_5.png" alt="IceWarp" />
             </div>
 
             <div className="partner-logo-card">

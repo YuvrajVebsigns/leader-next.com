@@ -19,11 +19,11 @@ export default function Partners2025() {
 
           <div className="partners-grid premium-grid">
             <div className="partner-logo-card">
-              <img src="/assets/partner/freshworks.webp" alt="Freshworks" />
+              <img src="/assets/partner/Freshworks.webp" alt="Freshworks" />
             </div>
 
             <div className="partner-logo-card">
-              <img src="/assets/partner/juniper-Redington.webp" alt="Juniper Redington" />
+              <img src="/assets/partner/Juniper-Redington.webp" alt="Juniper Redington" />
             </div>
 
             <div className="partner-logo-card">

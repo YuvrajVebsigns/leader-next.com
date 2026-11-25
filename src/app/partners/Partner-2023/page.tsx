@@ -85,7 +85,7 @@ export default function Partners2023() {
             </div>
 
             <div className="partner-logo-card">
-              <img src="/assets/partner/Tata-Communications.Webp" alt="Tata Communications" />
+              <img src="/assets/partner/Tata-Communications.webp" alt="Tata Communications" />
             </div>
           </div>
 

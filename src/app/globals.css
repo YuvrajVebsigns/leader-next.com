@@ -1813,6 +1813,7 @@ main {
 
 .contact-section {
   background: #a40000;
+  border-radius: 24px;
   padding: 90px 40px;
 }
 
@@ -15685,15 +15686,20 @@ s .dialogues-badge-mark {
 .contact-info-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
-  width: min(100%, 840px);
+  gap: 20px;
+  width: min(100%, 1040px);
   margin: 0 auto;
+}
+
+.contact-info-page > .contact-section {
+  margin-top: 48px;
 }
 
 .contact-info-card {
   position: relative;
   min-width: 0;
-  padding: 18px;
+  min-height: 180px;
+  padding: 24px;
   overflow: hidden;
   border: 1px solid #f0dddd;
   border-radius: 18px;
@@ -15714,25 +15720,25 @@ s .dialogues-badge-mark {
 .contact-info-card-heading {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 14px;
+  gap: 12px;
+  margin-bottom: 18px;
 }
 
 .contact-info-card-heading h2 {
   margin: 0;
   color: #1b1717;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 700;
   line-height: 1.4;
 }
 
 .contact-info-icon {
   display: inline-flex;
-  flex: 0 0 38px;
+  flex: 0 0 42px;
   align-items: center;
   justify-content: center;
-  width: 38px;
-  height: 38px;
+  width: 42px;
+  height: 42px;
   border-radius: 12px;
   background: #f8eeee;
   color: #a40000;
@@ -15741,7 +15747,7 @@ s .dialogues-badge-mark {
 .contact-partners {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
+  gap: 16px;
 }
 
 .contact-person {
@@ -15749,14 +15755,14 @@ s .dialogues-badge-mark {
   min-width: 0;
   flex-direction: column;
   gap: 8px;
-  padding: 12px;
+  padding: 14px;
   border-radius: 12px;
   background: #faf7f7;
 }
 
 .contact-person strong {
   color: #2a2525;
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .contact-person a {
@@ -15764,7 +15770,7 @@ s .dialogues-badge-mark {
   align-items: flex-start;
   gap: 7px;
   color: #675e5e;
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.5;
   text-decoration: none;
   overflow-wrap: anywhere;
@@ -15796,12 +15802,12 @@ s .dialogues-badge-mark {
   justify-content: space-between;
   gap: 12px;
   min-width: 0;
-  padding: 11px 12px;
+  padding: 12px 14px;
   border: 1px solid #f0d5d5;
   border-radius: 10px;
   background: #fffafa;
   color: #a40000;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
   line-height: 1.5;
   text-decoration: none;
@@ -15854,6 +15860,6 @@ s .dialogues-badge-mark {
   }
 
   .contact-info-card {
-    padding: 18px;
+    padding: 20px;
   }
 }

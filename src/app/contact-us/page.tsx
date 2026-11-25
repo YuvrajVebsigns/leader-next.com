@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import Image from 'next/image';
 import { ArrowUpRight, Building2, Handshake, Mail, Phone } from 'lucide-react';
+import ContactSection from '@/components/ContactSection';
 
 export const metadata: Metadata = {
   title: 'Contact Us | LeaderNext',
@@ -95,6 +96,8 @@ export default function ContactUsPage() {
           </a>
         </ContactCard>
       </div>
+
+      <ContactSection />
 
       {/* <p className="contact-info-visit">
         To know more visit{' '}

@@ -807,7 +807,7 @@ export default function ContactSection() {
                     {captchaStatus === 'verified'
                       ? 'Verification successful'
                       : captchaStatus === 'verifying'
-                        ? 'Verifying...'
+                        ? 'Verification in progress'
                         : captchaStatus === 'error'
                           ? 'Verification failed'
                           : 'Verify you are human'}
@@ -817,7 +817,7 @@ export default function ContactSection() {
                     {captchaStatus === 'verified'
                       ? 'You can now submit the form.'
                       : captchaStatus === 'verifying'
-                        ? 'Cloudflare is checking your request.'
+                        ? 'Please wait while we verify your request.'
                         : captchaStatus === 'error'
                           ? 'Please try again.'
                           : !isFormComplete
@@ -851,7 +851,7 @@ export default function ContactSection() {
                     {captchaStatus === 'loading'
                       ? 'Loading...'
                       : captchaStatus === 'verifying'
-                        ? 'Checking...'
+                        ? 'Verifying...'
                         : 'I’m human'}
                   </button>
                 )}
