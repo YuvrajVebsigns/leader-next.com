@@ -13,14 +13,27 @@ export default function FoundersMessage() {
   });
 
   return (
-    <section ref={sectionRef} className="founder-message-section">
+    <section ref={sectionRef} className="founder-message-section founder-message-detail">
       <div className="founder-message-container">
         <div className="founder-content">
-          <span className="founder-eyebrow">Founder’s Message</span>
+          <h1 className="founder-eyebrow">Founder’s Message</h1>
 
           {/* <h2 className="founder-title">
             Building connections in a <span>digital world.</span>
           </h2> */}
+
+          <div className="founder-image-wrapper">
+            <div className="founder-image-frame">
+              <Image
+                src="/assets/team/AnoopMathur.png"
+                alt="Anoop Mathur - Founder"
+                width={520}
+                height={620}
+                className="founder-image"
+                priority
+              />
+            </div>
+          </div>
 
           <p className="founder-description">
             The future technology leaders are poised to revolutionize the business world like never
@@ -96,24 +109,6 @@ export default function FoundersMessage() {
               </div>
             </Link>
           </div>
-        </div>
-
-        <div className="founder-image-wrapper">
-          <div className="founder-image-frame">
-            <Image
-              src="/assets/team/AnoopMathur.png"
-              alt="Anoop Mathur - Founder"
-              width={520}
-              height={620}
-              className="founder-image"
-              priority
-            />
-          </div>
-
-          {/* <div className="founder-experience-card">
-            <strong>13+</strong>
-            <span>Years of Impact</span>
-          </div> */}
         </div>
       </div>
     </section>
